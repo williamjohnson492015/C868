@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace C868
 {
-    public class Appointment
+    public class Time
     {
-        public int AppointmentID { get; set; }
+        public int TimeID { get; set; }
         public int CustomerID { get; set; }
         public string CustomerName { get; set; }
         public int UserID { get; set; }
@@ -16,10 +16,14 @@ namespace C868
         public string Type { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public int BillingContractID { get; set; }
+        public decimal TotalHours { get; set; }
+        public bool Billable { get; set; }
+        public string Notes { get; set; }
 
-        public Appointment(int appointmentId, int customerId, string customerName, int userId, string userName, string type, DateTime start, DateTime end)
+        public Time(int timeId, int customerId, string customerName, int userId, string userName, string type, DateTime start, DateTime end, int contractId, decimal totalHours, bool billable, string notes = null)
         {
-            AppointmentID = appointmentId;
+            TimeID = timeId;
             CustomerID = customerId;
             CustomerName = customerName;
             UserName = userName;
@@ -27,6 +31,11 @@ namespace C868
             Type = type;
             Start = start;
             End = end;
+            BillingContractID = contractId;
+            TotalHours = totalHours;
+            Billable = billable;
+            Notes = notes;
+
         }
     }
 }

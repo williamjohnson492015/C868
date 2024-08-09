@@ -19,51 +19,51 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace C868
 {
-    public partial class AppointmentScreen : Form
+    public partial class TimeScreen : Form
     {
-        public AppointmentScreen()
+        public TimeScreen()
         {
             InitializeComponent();
-            AppointmentScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            AppointmentScreen_Type_Combo.SelectedItem = null;
+            TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
+            TimeScreen_Type_Combo.SelectedItem = null;
             var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            AppointmentScreen_Customer_Combo.DataSource = customerDictionary;
-            AppointmentScreen_Customer_Combo.DisplayMember = "Value";
-            AppointmentScreen_Customer_Combo.ValueMember = "Key";
-            AppointmentScreen_Customer_Combo.SelectedItem = null;
+            TimeScreen_Customer_Combo.DataSource = customerDictionary;
+            TimeScreen_Customer_Combo.DisplayMember = "Value";
+            TimeScreen_Customer_Combo.ValueMember = "Key";
+            TimeScreen_Customer_Combo.SelectedItem = null;
             DateTime localNow = DateTime.Now.ToLocalTime();
-            AppointmentScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
-            AppointmentScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
-            ActiveControl = AppointmentScreen_Type_Combo;
+            TimeScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
+            TimeScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
+            ActiveControl = TimeScreen_Type_Combo;
         }
 
-        public AppointmentScreen(Appointment appointment)
+        public TimeScreen(Time Time)
         {
             InitializeComponent();
-            AppointmentScreen_AppointmentID_Text.Text = appointment.AppointmentID.ToString();
-            AppointmentScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            AppointmentScreen_Type_Combo.SelectedItem = appointment.Type;
+            TimeScreen_TimeID_Text.Text = Time.TimeID.ToString();
+            TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
+            TimeScreen_Type_Combo.SelectedItem = Time.Type;
             var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            AppointmentScreen_Customer_Combo.DataSource = customerDictionary;
-            AppointmentScreen_Customer_Combo.DisplayMember = "Value";
-            AppointmentScreen_Customer_Combo.ValueMember = "Key";
-            AppointmentScreen_Customer_Combo.SelectedItem = appointment.CustomerName;
-            AppointmentScreen_Start_DatePicker.Value = appointment.Start;
-            AppointmentScreen_End_DatePicker.Value = appointment.End;
-            ActiveControl = AppointmentScreen_Type_Combo;
+            TimeScreen_Customer_Combo.DataSource = customerDictionary;
+            TimeScreen_Customer_Combo.DisplayMember = "Value";
+            TimeScreen_Customer_Combo.ValueMember = "Key";
+            TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
+            TimeScreen_Start_DatePicker.Value = Time.Start;
+            TimeScreen_End_DatePicker.Value = Time.End;
+            ActiveControl = TimeScreen_Type_Combo;
         }
 
-        private void AppointmentScreen_Cancel_Btn_Click(object sender, EventArgs e)
+        private void TimeScreen_Cancel_Btn_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void AppointmentScreen_Save_Btn_Click(object sender, EventArgs e)
+        private void TimeScreen_Save_Btn_Click(object sender, EventArgs e)
         {
             try
             {
-                int appointmentID = -1;
-                if (AppointmentScreen_AppointmentID_Text.Text != "") { appointmentID = Convert.ToInt32(AppointmentScreen_AppointmentID_Text.Text); }
+                int TimeID = -1;
+                if (TimeScreen_TimeID_Text.Text != "") { TimeID = Convert.ToInt32(TimeScreen_TimeID_Text.Text); }
                 string type = "";
                 int customerID = -1;
                 DateTime localNow = DateTime.Now.ToLocalTime();
@@ -72,11 +72,11 @@ namespace C868
                 DateTime estNow = TimeZoneInfo.ConvertTime(localNow, local, est);
                 TimeSpan businessHoursStart = new DateTime(estNow.Year, estNow.Month, estNow.Day, 9, 0, 0).TimeOfDay;
                 TimeSpan businessHoursEnd = new DateTime(estNow.Year, estNow.Month, estNow.Day, 17, 0, 0).TimeOfDay;
-                DateTime start = Convert.ToDateTime(AppointmentScreen_Start_DatePicker.Value);
-                DateTime end = Convert.ToDateTime(AppointmentScreen_End_DatePicker.Value);
+                DateTime start = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
+                DateTime end = Convert.ToDateTime(TimeScreen_End_DatePicker.Value);
                 List<string> message = new List<string>();
-                if (AppointmentScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = AppointmentScreen_Type_Combo.Text.ToString(); }
-                if (AppointmentScreen_Customer_Combo.SelectedItem == null) { message.Add("Customer"); } else { customerID = Convert.ToInt32(AppointmentScreen_Customer_Combo.SelectedValue); }
+                if (TimeScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = TimeScreen_Type_Combo.Text.ToString(); }
+                if (TimeScreen_Customer_Combo.SelectedItem == null) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
                 if (start == null) { message.Add("Start"); }
                 if (end == null) { message.Add("End"); }
 
@@ -103,40 +103,40 @@ namespace C868
                     throw new ApplicationException(error);
                 }
 
-                // appointment scheduling validation handling
+                // Time scheduling validation handling
                 if (start > end)
                 {
-                    throw new ApplicationException("Appointment end cannot be set before appointment start.");
+                    throw new ApplicationException("Time end cannot be set before Time start.");
                 }
 
                 if ((start.DayOfWeek == DayOfWeek.Saturday) || (start.DayOfWeek == DayOfWeek.Sunday) || (end.DayOfWeek == DayOfWeek.Saturday) || (end.DayOfWeek == DayOfWeek.Sunday))
                 {
-                    throw new ApplicationException("Appointments cannot be setup outside of normal business days: Monday - Friday.");
+                    throw new ApplicationException("Times cannot be setup outside of normal business days: Monday - Friday.");
                 }
 
                 if ((TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay > businessHoursEnd) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay > businessHoursEnd))
                 {
-                    throw new ApplicationException($"Appointments cannot be set outside of normal business hours: \n9 am - 5 pm EST.\n\nAppointment Start Time (EST): {TimeZoneInfo.ConvertTime(start, local, est).ToShortTimeString()}\nAppointment End Time (EST): {TimeZoneInfo.ConvertTime(end, local, est).ToShortTimeString()}");
+                    throw new ApplicationException($"Times cannot be set outside of normal business hours: \n9 am - 5 pm EST.\n\nTime Start Time (EST): {TimeZoneInfo.ConvertTime(start, local, est).ToShortTimeString()}\nTime End Time (EST): {TimeZoneInfo.ConvertTime(end, local, est).ToShortTimeString()}");
                 }
 
-                foreach (Appointment appointment in MainScreen.Appointments)
+                foreach (Time Time in MainScreen.Times)
                 {
-                    if (start < appointment.End && appointment.Start < end)
+                    if (start < Time.End && Time.Start < end)
                     {
-                        if (appointmentID != appointment.AppointmentID)
+                        if (TimeID != Time.TimeID)
                         {
-                            throw new ApplicationException($"Appointment overlaps with another appointment.\n\nCustomer: {appointment.CustomerName}\nAppointment Start: {appointment.Start}\nAppointment End: {appointment.End}");
+                            throw new ApplicationException($"Time overlaps with another Time.\n\nCustomer: {Time.CustomerName}\nTime Start: {Time.Start}\nTime End: {Time.End}");
                         }
                     }
                 }
 
-                if (AppointmentScreen_AppointmentID_Text.Text == "")
+                if (TimeScreen_TimeID_Text.Text == "")
                 {
-                    Database.AddAppointment(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
+                    Database.AddTime(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
                 }
                 else
                 {
-                    Database.UpdateAppointment(appointmentID, customerID, type, start, end, MainScreen.User.UserName);
+                    Database.UpdateTime(TimeID, customerID, type, start, end, MainScreen.User.UserName);
                 }
                 Close();
             }

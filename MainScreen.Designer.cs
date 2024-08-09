@@ -37,14 +37,14 @@ namespace C868
             this.MainScreen_AddNewCustomer_Btn = new System.Windows.Forms.Button();
             this.MainScreen_EditCustomer_Btn = new System.Windows.Forms.Button();
             this.MainScreen_DeleteCustomer_Btn = new System.Windows.Forms.Button();
-            this.MainScreen_AppointmentGridView = new System.Windows.Forms.DataGridView();
-            this.MainScreen_AddNewAppointment_Btn = new System.Windows.Forms.Button();
-            this.MainScreen_EditAppointment_Btn = new System.Windows.Forms.Button();
-            this.MainScreen_DeleteAppointment_Btn = new System.Windows.Forms.Button();
+            this.MainScreen_TimeGridView = new System.Windows.Forms.DataGridView();
+            this.MainScreen_AddNewTime_Btn = new System.Windows.Forms.Button();
+            this.MainScreen_EditTime_Btn = new System.Windows.Forms.Button();
+            this.MainScreen_DeleteTime_Btn = new System.Windows.Forms.Button();
             this.MainScreen_Date_Label = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.MainScreen_Reports_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MainScreen_AppointmentTypesByMonth_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MainScreen_TimeTypesByMonth_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainScreen_SchedulesByCustomer_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainScreen_SchedulesByUser_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainScreen_Config_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +54,7 @@ namespace C868
             this.MainScreen_CustomerSearch_Label = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_CustomerGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MainScreen_AppointmentGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MainScreen_TimeGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,10 +127,10 @@ namespace C868
             this.MainScreen_DeleteCustomer_Btn.UseVisualStyleBackColor = true;
             this.MainScreen_DeleteCustomer_Btn.Click += new System.EventHandler(this.MainScreen_DeleteCustomer_Btn_Click);
             // 
-            // MainScreen_AppointmentGridView
+            // MainScreen_TimeGridView
             // 
-            this.MainScreen_AppointmentGridView.AllowUserToAddRows = false;
-            this.MainScreen_AppointmentGridView.AllowUserToDeleteRows = false;
+            this.MainScreen_TimeGridView.AllowUserToAddRows = false;
+            this.MainScreen_TimeGridView.AllowUserToDeleteRows = false;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -138,54 +138,54 @@ namespace C868
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.MainScreen_AppointmentGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            this.MainScreen_AppointmentGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MainScreen_AppointmentGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.MainScreen_AppointmentGridView.EnableHeadersVisualStyles = false;
-            this.MainScreen_AppointmentGridView.Location = new System.Drawing.Point(313, 68);
-            this.MainScreen_AppointmentGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MainScreen_AppointmentGridView.MultiSelect = false;
-            this.MainScreen_AppointmentGridView.Name = "MainScreen_AppointmentGridView";
-            this.MainScreen_AppointmentGridView.RowHeadersVisible = false;
-            this.MainScreen_AppointmentGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            this.MainScreen_AppointmentGridView.RowTemplate.Height = 24;
-            this.MainScreen_AppointmentGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.MainScreen_AppointmentGridView.Size = new System.Drawing.Size(537, 391);
-            this.MainScreen_AppointmentGridView.TabIndex = 16;
-            this.MainScreen_AppointmentGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.MainScreen_AppointmentGridView_DataBindingComplete);
+            this.MainScreen_TimeGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.MainScreen_TimeGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.MainScreen_TimeGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.MainScreen_TimeGridView.EnableHeadersVisualStyles = false;
+            this.MainScreen_TimeGridView.Location = new System.Drawing.Point(313, 68);
+            this.MainScreen_TimeGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MainScreen_TimeGridView.MultiSelect = false;
+            this.MainScreen_TimeGridView.Name = "MainScreen_TimeGridView";
+            this.MainScreen_TimeGridView.RowHeadersVisible = false;
+            this.MainScreen_TimeGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            this.MainScreen_TimeGridView.RowTemplate.Height = 24;
+            this.MainScreen_TimeGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.MainScreen_TimeGridView.Size = new System.Drawing.Size(537, 391);
+            this.MainScreen_TimeGridView.TabIndex = 16;
+            this.MainScreen_TimeGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.MainScreen_TimeGridView_DataBindingComplete);
             // 
-            // MainScreen_AddNewAppointment_Btn
+            // MainScreen_AddNewTime_Btn
             // 
-            this.MainScreen_AddNewAppointment_Btn.Location = new System.Drawing.Point(579, 465);
-            this.MainScreen_AddNewAppointment_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MainScreen_AddNewAppointment_Btn.Name = "MainScreen_AddNewAppointment_Btn";
-            this.MainScreen_AddNewAppointment_Btn.Size = new System.Drawing.Size(271, 30);
-            this.MainScreen_AddNewAppointment_Btn.TabIndex = 17;
-            this.MainScreen_AddNewAppointment_Btn.Text = "+ Add New Appointment";
-            this.MainScreen_AddNewAppointment_Btn.UseVisualStyleBackColor = true;
-            this.MainScreen_AddNewAppointment_Btn.Click += new System.EventHandler(this.MainScreen_AddNewAppointment_Btn_Click);
+            this.MainScreen_AddNewTime_Btn.Location = new System.Drawing.Point(579, 465);
+            this.MainScreen_AddNewTime_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MainScreen_AddNewTime_Btn.Name = "MainScreen_AddNewTime_Btn";
+            this.MainScreen_AddNewTime_Btn.Size = new System.Drawing.Size(271, 30);
+            this.MainScreen_AddNewTime_Btn.TabIndex = 17;
+            this.MainScreen_AddNewTime_Btn.Text = "+ Add New Time";
+            this.MainScreen_AddNewTime_Btn.UseVisualStyleBackColor = true;
+            this.MainScreen_AddNewTime_Btn.Click += new System.EventHandler(this.MainScreen_AddNewTime_Btn_Click);
             // 
-            // MainScreen_EditAppointment_Btn
+            // MainScreen_EditTime_Btn
             // 
-            this.MainScreen_EditAppointment_Btn.Location = new System.Drawing.Point(579, 502);
-            this.MainScreen_EditAppointment_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MainScreen_EditAppointment_Btn.Name = "MainScreen_EditAppointment_Btn";
-            this.MainScreen_EditAppointment_Btn.Size = new System.Drawing.Size(132, 30);
-            this.MainScreen_EditAppointment_Btn.TabIndex = 18;
-            this.MainScreen_EditAppointment_Btn.Text = "Edit Appointment";
-            this.MainScreen_EditAppointment_Btn.UseVisualStyleBackColor = true;
-            this.MainScreen_EditAppointment_Btn.Click += new System.EventHandler(this.MainScreen_EditAppointment_Btn_Click);
+            this.MainScreen_EditTime_Btn.Location = new System.Drawing.Point(579, 502);
+            this.MainScreen_EditTime_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MainScreen_EditTime_Btn.Name = "MainScreen_EditTime_Btn";
+            this.MainScreen_EditTime_Btn.Size = new System.Drawing.Size(132, 30);
+            this.MainScreen_EditTime_Btn.TabIndex = 18;
+            this.MainScreen_EditTime_Btn.Text = "Edit Time";
+            this.MainScreen_EditTime_Btn.UseVisualStyleBackColor = true;
+            this.MainScreen_EditTime_Btn.Click += new System.EventHandler(this.MainScreen_EditTime_Btn_Click);
             // 
-            // MainScreen_DeleteAppointment_Btn
+            // MainScreen_DeleteTime_Btn
             // 
-            this.MainScreen_DeleteAppointment_Btn.Location = new System.Drawing.Point(717, 501);
-            this.MainScreen_DeleteAppointment_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MainScreen_DeleteAppointment_Btn.Name = "MainScreen_DeleteAppointment_Btn";
-            this.MainScreen_DeleteAppointment_Btn.Size = new System.Drawing.Size(133, 30);
-            this.MainScreen_DeleteAppointment_Btn.TabIndex = 19;
-            this.MainScreen_DeleteAppointment_Btn.Text = "Delete Appointment";
-            this.MainScreen_DeleteAppointment_Btn.UseVisualStyleBackColor = true;
-            this.MainScreen_DeleteAppointment_Btn.Click += new System.EventHandler(this.MainScreen_DeleteAppointment_Btn_Click);
+            this.MainScreen_DeleteTime_Btn.Location = new System.Drawing.Point(717, 501);
+            this.MainScreen_DeleteTime_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MainScreen_DeleteTime_Btn.Name = "MainScreen_DeleteTime_Btn";
+            this.MainScreen_DeleteTime_Btn.Size = new System.Drawing.Size(133, 30);
+            this.MainScreen_DeleteTime_Btn.TabIndex = 19;
+            this.MainScreen_DeleteTime_Btn.Text = "Delete Time";
+            this.MainScreen_DeleteTime_Btn.UseVisualStyleBackColor = true;
+            this.MainScreen_DeleteTime_Btn.Click += new System.EventHandler(this.MainScreen_DeleteTime_Btn_Click);
             // 
             // MainScreen_Date_Label
             // 
@@ -213,19 +213,19 @@ namespace C868
             // MainScreen_Reports_MenuItem
             // 
             this.MainScreen_Reports_MenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MainScreen_AppointmentTypesByMonth_MenuItem,
+            this.MainScreen_TimeTypesByMonth_MenuItem,
             this.MainScreen_SchedulesByCustomer_MenuItem,
             this.MainScreen_SchedulesByUser_MenuItem});
             this.MainScreen_Reports_MenuItem.Name = "MainScreen_Reports_MenuItem";
             this.MainScreen_Reports_MenuItem.Size = new System.Drawing.Size(74, 24);
             this.MainScreen_Reports_MenuItem.Text = "Reports";
             // 
-            // MainScreen_AppointmentTypesByMonth_MenuItem
+            // MainScreen_TimeTypesByMonth_MenuItem
             // 
-            this.MainScreen_AppointmentTypesByMonth_MenuItem.Name = "MainScreen_AppointmentTypesByMonth_MenuItem";
-            this.MainScreen_AppointmentTypesByMonth_MenuItem.Size = new System.Drawing.Size(288, 26);
-            this.MainScreen_AppointmentTypesByMonth_MenuItem.Text = "Appointment Types by Month";
-            this.MainScreen_AppointmentTypesByMonth_MenuItem.Click += new System.EventHandler(this.MainScreen_AppointmentTypesByMonth_MenuItem_Click);
+            this.MainScreen_TimeTypesByMonth_MenuItem.Name = "MainScreen_TimeTypesByMonth_MenuItem";
+            this.MainScreen_TimeTypesByMonth_MenuItem.Size = new System.Drawing.Size(288, 26);
+            this.MainScreen_TimeTypesByMonth_MenuItem.Text = "Time Types by Month";
+            this.MainScreen_TimeTypesByMonth_MenuItem.Click += new System.EventHandler(this.MainScreen_TimeTypesByMonth_MenuItem_Click);
             // 
             // MainScreen_SchedulesByCustomer_MenuItem
             // 
@@ -301,10 +301,10 @@ namespace C868
             this.Controls.Add(this.MainScreen_CustomerSearch_Label);
             this.Controls.Add(this.MainScreen_DatePicker);
             this.Controls.Add(this.MainScreen_Date_Label);
-            this.Controls.Add(this.MainScreen_DeleteAppointment_Btn);
-            this.Controls.Add(this.MainScreen_EditAppointment_Btn);
-            this.Controls.Add(this.MainScreen_AddNewAppointment_Btn);
-            this.Controls.Add(this.MainScreen_AppointmentGridView);
+            this.Controls.Add(this.MainScreen_DeleteTime_Btn);
+            this.Controls.Add(this.MainScreen_EditTime_Btn);
+            this.Controls.Add(this.MainScreen_AddNewTime_Btn);
+            this.Controls.Add(this.MainScreen_TimeGridView);
             this.Controls.Add(this.MainScreen_DeleteCustomer_Btn);
             this.Controls.Add(this.MainScreen_EditCustomer_Btn);
             this.Controls.Add(this.MainScreen_AddNewCustomer_Btn);
@@ -317,7 +317,7 @@ namespace C868
             this.Text = "SCHEDULE IT";
             this.Shown += new System.EventHandler(this.MainScreen_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_CustomerGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.MainScreen_AppointmentGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MainScreen_TimeGridView)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -331,16 +331,16 @@ namespace C868
         private System.Windows.Forms.Button MainScreen_AddNewCustomer_Btn;
         private System.Windows.Forms.Button MainScreen_EditCustomer_Btn;
         private System.Windows.Forms.Button MainScreen_DeleteCustomer_Btn;
-        private System.Windows.Forms.DataGridView MainScreen_AppointmentGridView;
-        private System.Windows.Forms.Button MainScreen_AddNewAppointment_Btn;
-        private System.Windows.Forms.Button MainScreen_EditAppointment_Btn;
-        private System.Windows.Forms.Button MainScreen_DeleteAppointment_Btn;
+        private System.Windows.Forms.DataGridView MainScreen_TimeGridView;
+        private System.Windows.Forms.Button MainScreen_AddNewTime_Btn;
+        private System.Windows.Forms.Button MainScreen_EditTime_Btn;
+        private System.Windows.Forms.Button MainScreen_DeleteTime_Btn;
         private System.Windows.Forms.Label MainScreen_Date_Label;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_Reports_MenuItem;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_Config_MenuItem;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_SchedulesByCustomer_MenuItem;
-        private System.Windows.Forms.ToolStripMenuItem MainScreen_AppointmentTypesByMonth_MenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MainScreen_TimeTypesByMonth_MenuItem;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_SchedulesByUser_MenuItem;
         private System.Windows.Forms.DateTimePicker MainScreen_DatePicker;
         private System.Windows.Forms.Label MainScreen_CustomerSearch_Label;

@@ -21,7 +21,7 @@ namespace C868
         public string Email { get; set; }
         public string Notes { get; set; }
 
-        public Customer(int customerId, string customerName, string phone, string address, string address2, string city, string postalCode, string country, int addressId, int orgId, string email, string notes = "")
+        public Customer(int customerId, string customerName, string phone, string address, string address2, string city, string postalCode, string country, int addressId, int orgId, string email, string notes = null)
         {
             CustomerID = customerId;
             CustomerName = customerName;

@@ -187,7 +187,9 @@ namespace C868
 
         public static void GetCustomers()
         {
-            string query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId left join country co on ci.countryId = co.countryId";
+            string query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId," +
+                "c.organizationId, c.email, c.notes from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId " +
+                "left join country co on ci.countryId = co.countryId";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -204,24 +206,30 @@ namespace C868
                 string postalCode = dataReader[6].ToString();
                 string country = dataReader[7].ToString();
                 int addressID = Convert.ToInt32(dataReader[8]);
+                int orgID = Convert.ToInt32(dataReader[9]);
+                string email = dataReader[10].ToString();
+                string notes = dataReader[11].ToString();
 
-                MainScreen.Customers.Add(new Customer(customerID, customerName, phone, address, address2, city, postalCode, country, addressID));
+                MainScreen.Customers.Add(new Customer(customerID, customerName, phone, address, address2, city, postalCode, country, addressID, orgID, email, notes));
             }
 
             connection.Close();
         }
 
-        public static void AddCustomer(string customerName, int addressId, string userName)
+        public static void AddCustomer(string customerName, int addressId, string userName, int orgId, string email, string notes = null)
         {
             DateTime now = DateTime.Now;
             string query = "insert into customer (customerName,addressId,active,createDate,createdBy,lastUpdate,lastUpdateBy) " +
-                $"values('{customerName}',{addressId},1,'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
+                $"values('{customerName}',{addressId},1,'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+                $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}','{orgId}','{email}','{notes}');";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId left join country co on ci.countryId = co.countryId order by c.customerId desc limit 1;";
+            query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId " +
+                "c.organizationId, c.email, c.notes from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId " +
+                "left join country co on ci.countryId = co.countryId order by c.customerId desc limit 1;";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -236,24 +244,29 @@ namespace C868
                 string postalCode = dataReader[6].ToString();
                 string country = dataReader[7].ToString();
                 int addressID = Convert.ToInt32(dataReader[8]);
+                int orgID = Convert.ToInt32(dataReader[9]);
+                string customerEmail = dataReader[10].ToString();
+                string customerNotes = dataReader[11].ToString();
 
-                MainScreen.Customers.Add(new Customer(customerID, name, phone, address, address2, city, postalCode, country, addressID));
+                MainScreen.Customers.Add(new Customer(customerID, name, phone, address, address2, city, postalCode, country, addressID, orgID, customerEmail, customerNotes));
             }
 
             connection.Close();
         }
 
-        public static void UpdateCustomer(int customerId, string customerName, string userName)
+        public static void UpdateCustomer(int customerId, string customerName, string userName, int orgId, string email, string notes = null)
         {
             DateTime now = DateTime.Now;
-            string query = $"update customer set customerName = '{customerName}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', lastUpdateBy = '{userName}' " +
-                $"where customerId = {customerId};";
+            string query = $"update customer set customerName = '{customerName}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', " +
+                $"lastUpdateBy = '{userName}', organizationId = '{orgId}', email = '{email}', notes = '{notes}' where customerId = {customerId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = $"select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId left join country co on ci.countryId = co.countryId where c.customerId = {customerId};";
+            query = $"select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId " +
+                $"c.organizationId, c.email, c.notes from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId " +
+                $"left join country co on ci.countryId = co.countryId where c.customerId = {customerId};";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -268,8 +281,11 @@ namespace C868
                 string postalCode = dataReader[6].ToString();
                 string country = dataReader[7].ToString();
                 int addressID = Convert.ToInt32(dataReader[8]);
+                int orgID = Convert.ToInt32(dataReader[9]);
+                string customerEmail = dataReader[10].ToString();
+                string customerNotes = dataReader[11].ToString();
 
-                Customer update = new Customer(customerID, name, phone, address, address2, city, postalCode, country, addressID);
+                Customer update = new Customer(customerID, name, phone, address, address2, city, postalCode, country, addressID, orgID, customerEmail, customerNotes);
                 IEnumerable<int> index = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == update.CustomerID).Select(x => x.Index);
                 if (index != null) { MainScreen.Customers[index.SingleOrDefault()] = update; }
             }
@@ -288,9 +304,9 @@ namespace C868
             connection.Close();
         }
 
-        public static void GetAppointments()
+        public static void GetTimes()
         {
-            string query = "select a.appointmentId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from appointment a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId;";
+            string query = "select a.TimeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from Time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId;";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -298,7 +314,7 @@ namespace C868
 
             while (dataReader.Read())
             {
-                int appointmentID = Convert.ToInt32(dataReader[0]);
+                int TimeID = Convert.ToInt32(dataReader[0]);
                 int customerID = Convert.ToInt32(dataReader[1]);
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
@@ -307,16 +323,16 @@ namespace C868
                 DateTime start = Convert.ToDateTime(dataReader[6]);
                 DateTime end = Convert.ToDateTime(dataReader[7]);
 
-                MainScreen.Appointments.Add(new Appointment(appointmentID, customerID, customerName, userID, userName, type, start.ToLocalTime(), end.ToLocalTime()));
+                MainScreen.Times.Add(new Time(TimeID, customerID, customerName, userID, userName, type, start.ToLocalTime(), end.ToLocalTime()));
             }
 
             connection.Close();
         }
 
-        public static void AddAppointment(int customerId, int userId, string type, DateTime start, DateTime end, string userName)
+        public static void AddTime(int customerId, int userId, string type, DateTime start, DateTime end, string userName)
         {
             DateTime now = DateTime.Now;
-            string query = "insert into appointment (customerId,userId,title,description,location,contact,url,type,start,end,createDate,createdBy,lastUpdate,lastUpdateBy) " +
+            string query = "insert into time (customerId,userId,title,description,location,contact,url,type,start,end,createDate,createdBy,lastUpdate,lastUpdateBy) " +
                 $"values({customerId},{userId},'','','','','','{type}','{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
@@ -325,13 +341,13 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select a.appointmentId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from appointment a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId order by a.appointmentId desc limit 1;";
+            query = "select a.timeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId order by a.timeId desc limit 1;";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
             while (dataReader.Read())
             {
-                int appointmentID = Convert.ToInt32(dataReader[0]);
+                int timeID = Convert.ToInt32(dataReader[0]);
                 int customerID = Convert.ToInt32(dataReader[1]);
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
@@ -340,30 +356,30 @@ namespace C868
                 DateTime startDate = Convert.ToDateTime(dataReader[6]);
                 DateTime endDate = Convert.ToDateTime(dataReader[7]);
 
-                MainScreen.Appointments.Add(new Appointment(appointmentID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime()));
+                MainScreen.Times.Add(new Time(timeID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime()));
             }
 
             connection.Close();
         }
 
-        public static void UpdateAppointment(int appointmentId, int customerId, string type, DateTime start, DateTime end, string userName)
+        public static void UpdateTime(int TimeId, int customerId, string type, DateTime start, DateTime end, string userName)
         {
             DateTime now = DateTime.Now;
-            string query = $"update appointment set customerId = {customerId}, type = '{type}', start = '{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+            string query = $"update Time set customerId = {customerId}, type = '{type}', start = '{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"end = '{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $" lastUpdateBy = '{userName}' where appointmentId = {appointmentId};";
+                $" lastUpdateBy = '{userName}' where TimeId = {TimeId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = $"select a.appointmentId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from appointment a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId where a.appointmentId = {appointmentId};";
+            query = $"select a.TimeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from Time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId where a.TimeId = {TimeId};";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
             while (dataReader.Read())
             {
-                int appointmentID = Convert.ToInt32(dataReader[0]);
+                int TimeID = Convert.ToInt32(dataReader[0]);
                 int customerID = Convert.ToInt32(dataReader[1]);
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
@@ -372,27 +388,28 @@ namespace C868
                 DateTime startDate = Convert.ToDateTime(dataReader[6]);
                 DateTime endDate = Convert.ToDateTime(dataReader[7]);
 
-                Appointment update = new Appointment(appointmentID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime());
-                IEnumerable<int> index = MainScreen.Appointments.Select((a, i) => new { Appointment = a, Index = i }).Where(x => x.Appointment.AppointmentID == update.AppointmentID).Select(x => x.Index);
-                if (index != null) { MainScreen.Appointments[index.SingleOrDefault()] = update; }
+                Time update = new Time(TimeID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime());
+                IEnumerable<int> index = MainScreen.Times.Select((a, i) => new { Time = a, Index = i }).Where(x => x.Time.TimeID == update.TimeID).Select(x => x.Index);
+                if (index != null) { MainScreen.Times[index.SingleOrDefault()] = update; }
             }
 
             connection.Close();
         }
 
-        public static void RemoveAppointment(int appointmentId)
+        public static void RemoveTime(int TimeId)
         {
-            string query = $"delete from appointment where appointmentId = '{appointmentId}'";
+            string query = $"delete from Time where TimeId = '{TimeId}'";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
-            MainScreen.Appointments.Remove(MainScreen.Appointments.First(x => x.AppointmentID == appointmentId));
+            MainScreen.Times.Remove(MainScreen.Times.First(x => x.TimeID == TimeId));
             connection.Close();
         }
 
         public static void SetupDB()
         {
+            //add schema dump create script into this query when we're done with everything. Last step.
             string query = "";
 
             connection.Open();

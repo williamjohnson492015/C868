@@ -18,8 +18,8 @@ namespace C868
     public partial class MainScreen : Form
     {
         public static BindingList<Customer> Customers = new BindingList<Customer>();
-        public static BindingList<Appointment> Appointments = new BindingList<Appointment>();
-        public static Array AppointmentTypes = new[] { "Scrum", "Presentation" };
+        public static BindingList<Time> Times = new BindingList<Time>();
+        public static Array TimeTypes = new[] { "Scrum", "Presentation" };
         public static List<City> Cities = new List<City>();
         public static Dictionary<int, string> Countries = new Dictionary<int, string>();
         public static User User;
@@ -36,10 +36,10 @@ namespace C868
             MainScreen_CustomerGridView.DataSource = customerGrid;
             MainScreen_CustomerGridView.Columns[0].Visible = false;
 
-            var appointmentGrid = new BindingSource { DataSource = Appointments.Select(x => new { x.AppointmentID, Start = x.Start.ToShortTimeString(), End = x.End.ToShortTimeString(), x.Type, x.CustomerName }).ToList() };
-            MainScreen_AppointmentGridView.DataSource = appointmentGrid;
-            MainScreen_AppointmentGridView.Columns[0].Visible = false;
-            MainScreen_AppointmentSearch(MainScreen_DatePicker, new EventArgs());
+            var TimeGrid = new BindingSource { DataSource = Times.Select(x => new { x.TimeID, Start = x.Start.ToShortTimeString(), End = x.End.ToShortTimeString(), x.Type, x.CustomerName }).ToList() };
+            MainScreen_TimeGridView.DataSource = TimeGrid;
+            MainScreen_TimeGridView.Columns[0].Visible = false;
+            MainScreen_TimeSearch(MainScreen_DatePicker, new EventArgs());
         }
 
         private void MainScreen_Exit_MenuItem_Click(object sender, EventArgs e)
@@ -170,7 +170,7 @@ namespace C868
 
         }
 
-        private void MainScreen_AppointmentSearch(object sender, EventArgs e)
+        private void MainScreen_TimeSearch(object sender, EventArgs e)
         {
 
             DateTime key = MainScreen_DatePicker.Value;
@@ -178,38 +178,38 @@ namespace C868
             BindingSource result = new BindingSource();
 
             // find the index of the customer by name
-            List<Appointment> matches = Appointments.Where(x => x.Start.ToShortDateString().Equals(key.ToShortDateString())).ToList();
+            List<Time> matches = Times.Where(x => x.Start.ToShortDateString().Equals(key.ToShortDateString())).ToList();
 
             // handle zero matches and return accordingly
             if (matches.Count() == 0)
             {
-                //matches = new List<Appointment> { null };
-                result.DataSource = matches.Select(x => new { x.AppointmentID, x.Start, x.End, x.Type, x.CustomerName }).ToList();
+                //matches = new List<Time> { null };
+                result.DataSource = matches.Select(x => new { x.TimeID, x.Start, x.End, x.Type, x.CustomerName }).ToList();
             }
             else
             {
-                result.DataSource = matches.OrderBy(x => x.Start).Select(x => new { x.AppointmentID, Start = x.Start.ToShortTimeString(), End = x.End.ToShortTimeString(), x.Type, x.CustomerName }).ToList();
+                result.DataSource = matches.OrderBy(x => x.Start).Select(x => new { x.TimeID, Start = x.Start.ToShortTimeString(), End = x.End.ToShortTimeString(), x.Type, x.CustomerName }).ToList();
             }
 
 
             // display results
-            MainScreen_AppointmentGridView.DataSource = result.DataSource;
+            MainScreen_TimeGridView.DataSource = result.DataSource;
 
         }
 
-        private void MainScreen_AddNewAppointment_Btn_Click(object sender, EventArgs e)
+        private void MainScreen_AddNewTime_Btn_Click(object sender, EventArgs e)
         {
-            new AppointmentScreen().ShowDialog();
+            new TimeScreen().ShowDialog();
         }
 
-        private void MainScreen_EditAppointment_Btn_Click(object sender, EventArgs e)
+        private void MainScreen_EditTime_Btn_Click(object sender, EventArgs e)
         {
-            if (MainScreen_AppointmentGridView.SelectedRows.Count > 0)
+            if (MainScreen_TimeGridView.SelectedRows.Count > 0)
             {
-                int appointmentID = (int)MainScreen_AppointmentGridView.CurrentRow.Cells[0].Value;
-                Appointment appointment = Appointments.Where(x => x.AppointmentID == appointmentID).Select(x => x).ToList().Single();
-                new AppointmentScreen(appointment).ShowDialog();
-                MainScreen_AppointmentGridView.ClearSelection();
+                int TimeID = (int)MainScreen_TimeGridView.CurrentRow.Cells[0].Value;
+                Time Time = Times.Where(x => x.TimeID == TimeID).Select(x => x).ToList().Single();
+                new TimeScreen(Time).ShowDialog();
+                MainScreen_TimeGridView.ClearSelection();
             }
             else
             {
@@ -217,19 +217,19 @@ namespace C868
             }
         }
 
-        private void MainScreen_DeleteAppointment_Btn_Click(object sender, EventArgs e)
+        private void MainScreen_DeleteTime_Btn_Click(object sender, EventArgs e)
         {
             try
             {
-                if (MainScreen_AppointmentGridView.SelectedRows.Count > 0)
+                if (MainScreen_TimeGridView.SelectedRows.Count > 0)
                 {
-                    int appointmentID = (int)MainScreen_AppointmentGridView.CurrentRow.Cells[0].Value;
-                    Appointment appointment = Appointments.Where(x => x.AppointmentID == appointmentID).Select(x => x).ToList().Single();
+                    int TimeID = (int)MainScreen_TimeGridView.CurrentRow.Cells[0].Value;
+                    Time Time = Times.Where(x => x.TimeID == TimeID).Select(x => x).ToList().Single();
 
-                    DialogResult answer = MessageBox.Show("Are you sure you want to delete this appointment?", "Confirm Delete", MessageBoxButtons.YesNo);
+                    DialogResult answer = MessageBox.Show("Are you sure you want to delete this Time?", "Confirm Delete", MessageBoxButtons.YesNo);
                     if (answer == DialogResult.Yes)
                     {
-                        Database.RemoveAppointment(appointment.AppointmentID);
+                        Database.RemoveTime(Time.TimeID);
                     }
                     else
                     {
@@ -252,19 +252,19 @@ namespace C868
             Database.GetCustomers();
             Database.GetCities();
             Database.GetCountries();
-            Database.GetAppointments();
+            Database.GetTimes();
 
             return true;
         }
 
         private void MainScreen_Shown(object sender, EventArgs e)
         {
-            var appointmentsInFifteenMinutes = Appointments.Where(a => { DateTime localNow = DateTime.Now.ToLocalTime(); TimeSpan fifteenMinutes = new TimeSpan(0, 15, 0); var timeLeft = a.Start - localNow; if (timeLeft <= fifteenMinutes && timeLeft > new TimeSpan(0, 0, 0)) { return true; } else { return false; } });
+            var TimesInFifteenMinutes = Times.Where(a => { DateTime localNow = DateTime.Now.ToLocalTime(); TimeSpan fifteenMinutes = new TimeSpan(0, 15, 0); var timeLeft = a.Start - localNow; if (timeLeft <= fifteenMinutes && timeLeft > new TimeSpan(0, 0, 0)) { return true; } else { return false; } });
 
-            if (appointmentsInFifteenMinutes.Count() == 1)
+            if (TimesInFifteenMinutes.Count() == 1)
             {
-                var appointment = appointmentsInFifteenMinutes.Single();
-                MessageBox.Show($"Your appointment with {appointment.CustomerName} starts at {appointment.Start.ToShortTimeString()}.", "Appointment", MessageBoxButtons.OK);
+                var Time = TimesInFifteenMinutes.Single();
+                MessageBox.Show($"Your Time with {Time.CustomerName} starts at {Time.Start.ToShortTimeString()}.", "Time", MessageBoxButtons.OK);
             }
         }
 
@@ -278,9 +278,9 @@ namespace C868
             MainScreen_CustomerGridView.ClearSelection();
         }
 
-        private void MainScreen_AppointmentGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void MainScreen_TimeGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            MainScreen_AppointmentGridView.ClearSelection();
+            MainScreen_TimeGridView.ClearSelection();
         }
 
         private void Customers_ListChanged(object sender, ListChangedEventArgs e)
@@ -291,22 +291,22 @@ namespace C868
                 MainScreen_CustomerGridView.ClearSelection();
             }
         }
-        private void Appointments_ListChanged(object sender, ListChangedEventArgs e)
+        private void Times_ListChanged(object sender, ListChangedEventArgs e)
         {
             if (dbCacheInitialized)
             {
-                MainScreen_AppointmentSearch(MainScreen_DatePicker, new EventArgs());
-                MainScreen_AppointmentGridView.ClearSelection();
+                MainScreen_TimeSearch(MainScreen_DatePicker, new EventArgs());
+                MainScreen_TimeGridView.ClearSelection();
             }
         }
 
         private void MainScreen_DatePicker_ValueChanged(object sender, EventArgs e)
         {
-            MainScreen_AppointmentSearch(MainScreen_DatePicker, new EventArgs());
-            MainScreen_AppointmentGridView.ClearSelection();
+            MainScreen_TimeSearch(MainScreen_DatePicker, new EventArgs());
+            MainScreen_TimeGridView.ClearSelection();
         }
 
-        private void MainScreen_AppointmentTypesByMonth_MenuItem_Click(object sender, EventArgs e)
+        private void MainScreen_TimeTypesByMonth_MenuItem_Click(object sender, EventArgs e)
         {
             new ReportScreen(1).ShowDialog();
         }
