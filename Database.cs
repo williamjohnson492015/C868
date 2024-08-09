@@ -306,7 +306,8 @@ namespace C868
 
         public static void GetTimes()
         {
-            string query = "select a.TimeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from Time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId;";
+            string query = "select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, " +
+                "t.notes from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId;";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -314,7 +315,7 @@ namespace C868
 
             while (dataReader.Read())
             {
-                int TimeID = Convert.ToInt32(dataReader[0]);
+                int timeID = Convert.ToInt32(dataReader[0]);
                 int customerID = Convert.ToInt32(dataReader[1]);
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
@@ -322,26 +323,33 @@ namespace C868
                 string type = dataReader[5].ToString();
                 DateTime start = Convert.ToDateTime(dataReader[6]);
                 DateTime end = Convert.ToDateTime(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[8]);
+                decimal totalHours = Convert.ToDecimal(dataReader[9]);
+                bool billable = Convert.ToBoolean(dataReader[10]);
+                string notes = dataReader[11].ToString();
 
-                MainScreen.Times.Add(new Time(TimeID, customerID, customerName, userID, userName, type, start.ToLocalTime(), end.ToLocalTime()));
+                MainScreen.Times.Add(new Time(timeID, customerID, customerName, userID, userName, type, start.ToLocalTime(), end.ToLocalTime(), contractID, totalHours, billable, notes));
             }
 
             connection.Close();
         }
 
-        public static void AddTime(int customerId, int userId, string type, DateTime start, DateTime end, string userName)
+        public static void AddTime(int customerId, int userId, string type, DateTime start, DateTime end, string userName, int contractId, decimal tHours, bool isBillable, string timeNotes = null)
         {
             DateTime now = DateTime.Now;
-            string query = "insert into time (customerId,userId,title,description,location,contact,url,type,start,end,createDate,createdBy,lastUpdate,lastUpdateBy) " +
-                $"values({customerId},{userId},'','','','','','{type}','{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+            string query = "insert into time (customerId,userId,title,description,location,contact,url,type,start,end,createDate,createdBy,lastUpdate,lastUpdateBy," +
+                $"billingContractId,totalHours,billable,notes) values({customerId},{userId},'','','','','','{type}','{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
+                $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}','{contractId}','{tHours}'," +
+                $"'{isBillable}','{timeNotes}');";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select a.timeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId order by a.timeId desc limit 1;";
+            query = "select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, " +
+                "t.notes from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId;";
+
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -352,58 +360,67 @@ namespace C868
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
                 string user = dataReader[4].ToString();
-                string meetingType = dataReader[5].ToString();
-                DateTime startDate = Convert.ToDateTime(dataReader[6]);
-                DateTime endDate = Convert.ToDateTime(dataReader[7]);
+                string timeType = dataReader[5].ToString();
+                DateTime startDateTime = Convert.ToDateTime(dataReader[6]);
+                DateTime endDateTime = Convert.ToDateTime(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[8]);
+                decimal totalHours = Convert.ToDecimal(dataReader[9]);
+                bool billable = Convert.ToBoolean(dataReader[10]);
+                string notes = dataReader[11].ToString();
 
-                MainScreen.Times.Add(new Time(timeID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime()));
+                MainScreen.Times.Add(new Time(timeID, customerID, customerName, userID, user, timeType, startDateTime.ToLocalTime(), endDateTime.ToLocalTime(), contractID, totalHours, billable, notes));
             }
 
             connection.Close();
         }
 
-        public static void UpdateTime(int TimeId, int customerId, string type, DateTime start, DateTime end, string userName)
+        public static void UpdateTime(int timeId, int customerId, string type, DateTime start, DateTime end, string userName, int contractId, decimal tHours, bool isBillable, string timeNotes = null)
         {
             DateTime now = DateTime.Now;
-            string query = $"update Time set customerId = {customerId}, type = '{type}', start = '{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+            string query = $"update time set customerId = {customerId}, type = '{type}', start = '{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"end = '{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $" lastUpdateBy = '{userName}' where TimeId = {TimeId};";
+                $" lastUpdateBy = '{userName}', billingContractId = '{contractId}', totalHours = '{tHours}', billable = '{isBillable}', notes = '{timeNotes}' where TimeId = {timeId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = $"select a.TimeId, a.customerId, c.customerName, a.userId, u.userName, a.type, a.start, a.end from Time a left join customer c on a.customerId = c.customerId left join user u on a.userId = u.userId where a.TimeId = {TimeId};";
+            query = $"select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, t.notes " +
+                $"from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId where a.TimeId = {timeId};";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
             while (dataReader.Read())
             {
-                int TimeID = Convert.ToInt32(dataReader[0]);
+                int timeID = Convert.ToInt32(dataReader[0]);
                 int customerID = Convert.ToInt32(dataReader[1]);
                 string customerName = dataReader[2].ToString();
                 int userID = Convert.ToInt32(dataReader[3]);
                 string user = dataReader[4].ToString();
-                string meetingType = dataReader[5].ToString();
-                DateTime startDate = Convert.ToDateTime(dataReader[6]);
-                DateTime endDate = Convert.ToDateTime(dataReader[7]);
+                string timeType = dataReader[5].ToString();
+                DateTime startDateTime = Convert.ToDateTime(dataReader[6]);
+                DateTime endDateTime = Convert.ToDateTime(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[8]);
+                decimal totalHours = Convert.ToDecimal(dataReader[9]);
+                bool billable = Convert.ToBoolean(dataReader[10]);
+                string notes = dataReader[11].ToString();
 
-                Time update = new Time(TimeID, customerID, customerName, userID, user, meetingType, startDate.ToLocalTime(), endDate.ToLocalTime());
-                IEnumerable<int> index = MainScreen.Times.Select((a, i) => new { Time = a, Index = i }).Where(x => x.Time.TimeID == update.TimeID).Select(x => x.Index);
+                Time update = new Time(timeID, customerID, customerName, userID, user, timeType, startDateTime.ToLocalTime(), endDateTime.ToLocalTime(),contractID,totalHours,billable,notes);
+                IEnumerable<int> index = MainScreen.Times.Select((t, i) => new { Time = t, Index = i }).Where(x => x.Time.TimeID == update.TimeID).Select(x => x.Index);
                 if (index != null) { MainScreen.Times[index.SingleOrDefault()] = update; }
             }
 
             connection.Close();
         }
 
-        public static void RemoveTime(int TimeId)
+        public static void RemoveTime(int timeId)
         {
-            string query = $"delete from Time where TimeId = '{TimeId}'";
+            string query = $"delete from time where timeId = '{timeId}'";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
-            MainScreen.Times.Remove(MainScreen.Times.First(x => x.TimeID == TimeId));
+            MainScreen.Times.Remove(MainScreen.Times.First(x => x.TimeID == timeId));
             connection.Close();
         }
 

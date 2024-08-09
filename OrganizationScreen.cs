@@ -40,7 +40,7 @@ namespace C868
         public OrganizationScreen(Appointment appointment)
         {
             InitializeComponent();
-            OrganizationScreen_AppointmentID_Text.Text = appointment.AppointmentID.ToString();
+            OrganizationScreen_OrganizationID_Text.Text = appointment.AppointmentID.ToString();
             OrganizationScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
             OrganizationScreen_Type_Combo.SelectedItem = appointment.Type;
             var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
@@ -63,7 +63,7 @@ namespace C868
             try
             {
                 int appointmentID = -1;
-                if (OrganizationScreen_AppointmentID_Text.Text != "") { appointmentID = Convert.ToInt32(OrganizationScreen_AppointmentID_Text.Text); }
+                if (OrganizationScreen_OrganizationID_Text.Text != "") { appointmentID = Convert.ToInt32(OrganizationScreen_OrganizationID_Text.Text); }
                 string type = "";
                 int customerID = -1;
                 DateTime localNow = DateTime.Now.ToLocalTime();
@@ -130,7 +130,7 @@ namespace C868
                     }
                 }
 
-                if (OrganizationScreen_AppointmentID_Text.Text == "")
+                if (OrganizationScreen_OrganizationID_Text.Text == "")
                 {
                     Database.AddAppointment(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
                 }

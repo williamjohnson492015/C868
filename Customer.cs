@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace C868
 {
     public class Customer
     {
+
+        public BindingList<BillingContract> AssociatedContracts = new BindingList<BillingContract>();
         public int CustomerID { get; set; }
         public string CustomerName { get; set; }
         public string Phone { get; set; }
@@ -35,6 +38,18 @@ namespace C868
             OrganizationID = orgId;
             Email = email;
             Notes = notes;
+        }
+
+        public void AddAssociatedContract(BillingContract contract)
+        {
+            //move this to database.cs
+            AssociatedContracts.Add(contract);
+        }
+
+        public void RemoveAssociatedContract(BillingContract contract)
+        {
+            //move this to database.cs when you get to that stage. Also delete the billing contract as well
+            AssociatedContracts.Remove(contract);
         }
     }
 }

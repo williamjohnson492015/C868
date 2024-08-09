@@ -152,6 +152,9 @@
       <DependentUpon>ReportScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="User.cs" />
+    <EmbeddedResource Include="OrganizationScreen.resx">
+      <DependentUpon>OrganizationScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimeScreen.resx">
       <DependentUpon>TimeScreen.cs</DependentUpon>
     </EmbeddedResource>
