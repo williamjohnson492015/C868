@@ -304,6 +304,116 @@ namespace C868
             connection.Close();
         }
 
+        public static void GetOrganizations()
+        {
+            string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                "o.unaffiliatedDefault from organization o;";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int orgID = Convert.ToInt32(dataReader[0]);
+                string orgName = dataReader[1].ToString();
+                string contactName = dataReader[2].ToString();
+                string contactPhone = dataReader[3].ToString();
+                string contactEmail = dataReader[4].ToString();
+                bool isActive = Convert.ToBoolean(dataReader[5]);
+                string orgNotes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes, unaffiliatedDefault));
+            }
+
+            connection.Close();
+        }
+
+        public static void AddOrganization(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false )
+        {
+            DateTime now = DateTime.Now;
+            string query = "insert into organization " +
+                "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,unaffiliatedDefault,createDate,createdBy,lastUpdate,lastUpdateBy) " +
+                $"values('{orgName}','{contactName}','{contactPhone}','{contactEmail}',{isActive},'{orgNotes}',{isDefault}," +
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                "o.unaffiliatedDefault from organization o order by o.organizationId desc limit 1;";
+
+            cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int orgID = Convert.ToInt32(dataReader[0]);
+                string organizationName = dataReader[1].ToString();
+                string billingContactName = dataReader[2].ToString();
+                string billingContactPhone = dataReader[3].ToString();
+                string billingContactEmail = dataReader[4].ToString();
+                bool active = Convert.ToBoolean(dataReader[5]);
+                string notes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault));
+            }
+
+            connection.Close();
+        }
+
+        public static void UpdateOrganization(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        {
+            DateTime now = DateTime.Now;
+            string query = "update organization " +
+                $"set organizationName = '{orgName}', billingContactName = '{contactName}', billingContactPhone = '{contactPhone}', billingContactEmail = '{contactEmail}', " +
+                $"active = {isActive}, notes = '{orgNotes}', unaffiliatedDefault = {isDefault},lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+                $"lastUpdateBy = '{userName}' where organizationId = {orgId};";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                $"o.unaffiliatedDefault from organization o where o.organizationId = {orgId};";
+
+            cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int orgID = Convert.ToInt32(dataReader[0]);
+                string organizationName = dataReader[1].ToString();
+                string billingContactName = dataReader[2].ToString();
+                string billingContactPhone = dataReader[3].ToString();
+                string billingContactEmail = dataReader[4].ToString();
+                bool active = Convert.ToBoolean(dataReader[5]);
+                string notes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault);
+                IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
+                if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = update; }
+            }
+
+            connection.Close();
+        }
+
+        public static void RemoveOrganization(int orgId)
+        {
+            string query = $"delete from organization where organizationId = {orgId}";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+            MainScreen.Organizations.Remove(MainScreen.Organizations.First(x => x.OrganizationID == orgId));
+            connection.Close();
+        }
+
         public static void GetTimes()
         {
             string query = "select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, " +
@@ -341,14 +451,14 @@ namespace C868
                 $"billingContractId,totalHours,billable,notes) values({customerId},{userId},'','','','','','{type}','{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}','{contractId}','{tHours}'," +
-                $"'{isBillable}','{timeNotes}');";
+                $"{isBillable},'{timeNotes}');";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
             query = "select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, " +
-                "t.notes from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId;";
+                "t.notes from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId order by t.timeId desc limit 1;";
 
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -379,14 +489,14 @@ namespace C868
             DateTime now = DateTime.Now;
             string query = $"update time set customerId = {customerId}, type = '{type}', start = '{start.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"end = '{end.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $" lastUpdateBy = '{userName}', billingContractId = '{contractId}', totalHours = '{tHours}', billable = '{isBillable}', notes = '{timeNotes}' where TimeId = {timeId};";
+                $" lastUpdateBy = '{userName}', billingContractId = {contractId}, totalHours = {tHours}, billable = {isBillable}, notes = '{timeNotes}' where TimeId = {timeId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
             query = $"select t.timeId, t.customerId, c.customerName, t.userId, u.userName, t.type, t.start, t.end, t.billingContractId, t.totalHours, t.billable, t.notes " +
-                $"from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId where a.TimeId = {timeId};";
+                $"from time t left join customer c on t.customerId = c.customerId left join user u on t.userId = u.userId where t.TimeId = {timeId};";
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -415,7 +525,7 @@ namespace C868
 
         public static void RemoveTime(int timeId)
         {
-            string query = $"delete from time where timeId = '{timeId}'";
+            string query = $"delete from time t where t.timeId = {timeId}";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);

@@ -104,6 +104,12 @@
     <Compile Include="BillingContractScreen.Designer.cs">
       <DependentUpon>BillingContractScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="OrganizationSearchScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OrganizationSearchScreen.Designer.cs">
+      <DependentUpon>OrganizationSearchScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="OrganizationScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +158,9 @@
       <DependentUpon>ReportScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="User.cs" />
+    <EmbeddedResource Include="OrganizationSearchScreen.resx">
+      <DependentUpon>OrganizationSearchScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OrganizationScreen.resx">
       <DependentUpon>OrganizationScreen.cs</DependentUpon>
     </EmbeddedResource>

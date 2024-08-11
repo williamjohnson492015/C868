@@ -30,8 +30,8 @@ namespace C868
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainScreen_CustomerSearch_Text = new System.Windows.Forms.TextBox();
             this.MainScreen_CustomerGridView = new System.Windows.Forms.DataGridView();
             this.MainScreen_AddNewCustomer_Btn = new System.Windows.Forms.Button();
@@ -55,6 +55,8 @@ namespace C868
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_CustomerGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_TimeGridView)).BeginInit();
+            MainScreen.Customers.ListChanged += new ListChangedEventHandler(Customers_ListChanged);
+            MainScreen.Times.ListChanged += new ListChangedEventHandler(Times_ListChanged);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,14 +73,14 @@ namespace C868
             // 
             this.MainScreen_CustomerGridView.AllowUserToAddRows = false;
             this.MainScreen_CustomerGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.MainScreen_CustomerGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.MainScreen_CustomerGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.MainScreen_CustomerGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.MainScreen_CustomerGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.MainScreen_CustomerGridView.EnableHeadersVisualStyles = false;
@@ -131,14 +133,14 @@ namespace C868
             // 
             this.MainScreen_TimeGridView.AllowUserToAddRows = false;
             this.MainScreen_TimeGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.MainScreen_TimeGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.MainScreen_TimeGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.MainScreen_TimeGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.MainScreen_TimeGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.MainScreen_TimeGridView.EnableHeadersVisualStyles = false;
@@ -223,21 +225,21 @@ namespace C868
             // MainScreen_TimeTypesByMonth_MenuItem
             // 
             this.MainScreen_TimeTypesByMonth_MenuItem.Name = "MainScreen_TimeTypesByMonth_MenuItem";
-            this.MainScreen_TimeTypesByMonth_MenuItem.Size = new System.Drawing.Size(288, 26);
+            this.MainScreen_TimeTypesByMonth_MenuItem.Size = new System.Drawing.Size(245, 26);
             this.MainScreen_TimeTypesByMonth_MenuItem.Text = "Time Types by Month";
             this.MainScreen_TimeTypesByMonth_MenuItem.Click += new System.EventHandler(this.MainScreen_TimeTypesByMonth_MenuItem_Click);
             // 
             // MainScreen_SchedulesByCustomer_MenuItem
             // 
             this.MainScreen_SchedulesByCustomer_MenuItem.Name = "MainScreen_SchedulesByCustomer_MenuItem";
-            this.MainScreen_SchedulesByCustomer_MenuItem.Size = new System.Drawing.Size(288, 26);
+            this.MainScreen_SchedulesByCustomer_MenuItem.Size = new System.Drawing.Size(245, 26);
             this.MainScreen_SchedulesByCustomer_MenuItem.Text = "Schedules by Customer";
             this.MainScreen_SchedulesByCustomer_MenuItem.Click += new System.EventHandler(this.MainScreen_SchedulesByCustomer_MenuItem_Click);
             // 
             // MainScreen_SchedulesByUser_MenuItem
             // 
             this.MainScreen_SchedulesByUser_MenuItem.Name = "MainScreen_SchedulesByUser_MenuItem";
-            this.MainScreen_SchedulesByUser_MenuItem.Size = new System.Drawing.Size(288, 26);
+            this.MainScreen_SchedulesByUser_MenuItem.Size = new System.Drawing.Size(245, 26);
             this.MainScreen_SchedulesByUser_MenuItem.Text = "Schedules by User";
             this.MainScreen_SchedulesByUser_MenuItem.Click += new System.EventHandler(this.MainScreen_SchedulesByUser_MenuItem_Click);
             // 
@@ -286,7 +288,7 @@ namespace C868
             this.label1.AutoSize = true;
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label1.Font = new System.Drawing.Font("Showcard Gothic", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(328, 498);
+            this.label1.Location = new System.Drawing.Point(341, 493);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(192, 37);
             this.label1.TabIndex = 25;

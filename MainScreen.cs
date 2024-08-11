@@ -19,6 +19,7 @@ namespace C868
     {
         public static BindingList<Customer> Customers = new BindingList<Customer>();
         public static BindingList<Time> Times = new BindingList<Time>();
+        public static BindingList<Organization> Organizations = new BindingList<Organization>();
         public static Array TimeTypes = new[] { "Scrum", "Presentation" };
         public static List<City> Cities = new List<City>();
         public static Dictionary<int, string> Countries = new Dictionary<int, string>();
@@ -253,6 +254,7 @@ namespace C868
             Database.GetCities();
             Database.GetCountries();
             Database.GetTimes();
+            Database.GetOrganizations();
 
             return true;
         }
@@ -323,7 +325,7 @@ namespace C868
 
         private void MainScreen_Organizations_MenuItem_Click(object sender, EventArgs e)
         {
-            //new OrganizationScreen().ShowDialog();
+            new OrganizationSearchScreen().ShowDialog();
         }
     }
 }

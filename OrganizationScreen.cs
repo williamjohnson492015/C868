@@ -21,36 +21,35 @@ namespace C868
 {
     public partial class OrganizationScreen : Form
     {
+        private BindingList<BillingContract> associatedContracts = new BindingList<BillingContract>();
+
         public OrganizationScreen()
         {
             InitializeComponent();
-            OrganizationScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            OrganizationScreen_Type_Combo.SelectedItem = null;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            OrganizationScreen_Customer_Combo.DataSource = customerDictionary;
-            OrganizationScreen_Customer_Combo.DisplayMember = "Value";
-            OrganizationScreen_Customer_Combo.ValueMember = "Key";
-            OrganizationScreen_Customer_Combo.SelectedItem = null;
-            DateTime localNow = DateTime.Now.ToLocalTime();
-            OrganizationScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
-            OrganizationScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
-            ActiveControl = OrganizationScreen_Type_Combo;
+            
+            var associationView = new BindingSource() { DataSource = associatedContracts };
+            OrganizationScreen_BillingContractGridView.DataSource = associationView;
+
+            ActiveControl = OrganizationScreen_OrganizationName_Text;
         }
 
-        public OrganizationScreen(Appointment appointment)
+        public OrganizationScreen(Organization org)
         {
             InitializeComponent();
-            OrganizationScreen_OrganizationID_Text.Text = appointment.AppointmentID.ToString();
-            OrganizationScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            OrganizationScreen_Type_Combo.SelectedItem = appointment.Type;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            OrganizationScreen_Customer_Combo.DataSource = customerDictionary;
-            OrganizationScreen_Customer_Combo.DisplayMember = "Value";
-            OrganizationScreen_Customer_Combo.ValueMember = "Key";
-            OrganizationScreen_Customer_Combo.SelectedItem = appointment.CustomerName;
-            OrganizationScreen_Start_DatePicker.Value = appointment.Start;
-            OrganizationScreen_End_DatePicker.Value = appointment.End;
-            ActiveControl = OrganizationScreen_Type_Combo;
+
+            OrganizationScreen_OrganizationID_Text.Text = org.OrganizationID.ToString();
+            OrganizationScreen_OrganizationName_Text.Text = org.OrganizationName;
+            OrganizationScreen_BillingContactName_Text.Text = org.BillingContactName;
+            OrganizationScreen_BillingContactPhone_Text.Text = org.BillingContactPhone;
+            OrganizationScreen_BillingContactEmail_Text.Text = org.BillingContactEmail;
+            if(org.Active == true) { OrganizationScreen_Active_CheckBox.Checked = true; } else { OrganizationScreen_Active_CheckBox.Checked = false; }
+            OrganizationScreen_Notes_Text.Text = org.Notes;
+
+            associatedContracts = org.AssociatedContracts;
+            var associationView = new BindingSource() { DataSource = associatedContracts };
+            OrganizationScreen_BillingContractGridView.DataSource = associationView;
+
+            ActiveControl = OrganizationScreen_OrganizationName_Text;
         }
 
         private void OrganizationScreen_Cancel_Btn_Click(object sender, EventArgs e)
