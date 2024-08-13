@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 
 namespace C868
 {
@@ -32,10 +33,19 @@ namespace C868
             AssociatedContracts.Add(contract);
         }
 
-        public void RemoveAssociatedContract(BillingContract contract)
+        public void RemoveAssociatedContract(int contractId)
         {
             //move this logic to database.cs & delete the billing contract record
-            AssociatedContracts.Remove(contract);
+            AssociatedContracts.Remove(LookupAssociatedContract(contractId));
+        }
+
+        public BillingContract LookupAssociatedContract(int contractId)
+        {
+            foreach(BillingContract contract in AssociatedContracts)
+            {
+                if (contract.BillingContractID == contractId) { return contract; } 
+            }
+            return null;
         }
     }
 }

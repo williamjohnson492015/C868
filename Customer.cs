@@ -46,10 +46,19 @@ namespace C868
             AssociatedContracts.Add(contract);
         }
 
-        public void RemoveAssociatedContract(BillingContract contract)
+        public void RemoveAssociatedContract(int contractId)
         {
             //move this to database.cs when you get to that stage. Also delete the billing contract as well
-            AssociatedContracts.Remove(contract);
+            AssociatedContracts.Remove(LookupAssociatedContract(contractId));
+        }
+
+        public BillingContract LookupAssociatedContract(int contractId)
+        {
+            foreach (BillingContract contract in AssociatedContracts)
+            {
+                if (contract.BillingContractID == contractId) { return contract; }
+            }
+            return null;
         }
     }
 }

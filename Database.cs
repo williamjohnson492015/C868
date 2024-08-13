@@ -330,8 +330,9 @@ namespace C868
             connection.Close();
         }
 
-        public static void AddOrganization(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false )
+        public static int AddOrganization(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false )
         {
+            int orgID = -1;
             DateTime now = DateTime.Now;
             string query = "insert into organization " +
                 "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,unaffiliatedDefault,createDate,createdBy,lastUpdate,lastUpdateBy) " +
@@ -351,7 +352,7 @@ namespace C868
 
             while (dataReader.Read())
             {
-                int orgID = Convert.ToInt32(dataReader[0]);
+                orgID = Convert.ToInt32(dataReader[0]);
                 string organizationName = dataReader[1].ToString();
                 string billingContactName = dataReader[2].ToString();
                 string billingContactPhone = dataReader[3].ToString();
@@ -364,6 +365,7 @@ namespace C868
             }
 
             connection.Close();
+            return orgID;
         }
 
         public static void UpdateOrganization(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
@@ -531,6 +533,151 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
             MainScreen.Times.Remove(MainScreen.Times.First(x => x.TimeID == timeId));
+            connection.Close();
+        }
+
+        public static bool BillingContractAssociatedTimeCheck(int contractId)
+        {
+            int timeCount = 0;
+            string query = $"select count(*) from time t where t.BillingContractId = {contractId}";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                timeCount = Convert.ToInt32(dataReader[0]);
+            }
+            connection.Close();
+            return timeCount > 0;
+        }
+
+        public static void GetBillingContracts()
+        {
+            //TODO: Get them all and then use the orgID to find the org and then associate the billing contract using it's built in function
+            // where customerId is not null, use the customerId to find the customer and then associate the billing contract using it's built in function
+            string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                "o.unaffiliatedDefault from organization o;";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int orgID = Convert.ToInt32(dataReader[0]);
+                string orgName = dataReader[1].ToString();
+                string contactName = dataReader[2].ToString();
+                string contactPhone = dataReader[3].ToString();
+                string contactEmail = dataReader[4].ToString();
+                bool isActive = Convert.ToBoolean(dataReader[5]);
+                string orgNotes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes, unaffiliatedDefault));
+            }
+
+            connection.Close();
+        }
+
+        public static int AddBillingContract(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        {
+            //TODO: when adding, make sure it accommodates org and customer variants; customer can be null while org cannot
+            int orgID = -1;
+            DateTime now = DateTime.Now;
+            string query = "insert into organization " +
+                "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,unaffiliatedDefault,createDate,createdBy,lastUpdate,lastUpdateBy) " +
+                $"values('{orgName}','{contactName}','{contactPhone}','{contactEmail}',{isActive},'{orgNotes}',{isDefault}," +
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                "o.unaffiliatedDefault from organization o order by o.organizationId desc limit 1;";
+
+            cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                orgID = Convert.ToInt32(dataReader[0]);
+                string organizationName = dataReader[1].ToString();
+                string billingContactName = dataReader[2].ToString();
+                string billingContactPhone = dataReader[3].ToString();
+                string billingContactEmail = dataReader[4].ToString();
+                bool active = Convert.ToBoolean(dataReader[5]);
+                string notes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault));
+            }
+
+            connection.Close();
+            return orgID;
+        }
+
+        public static void UpdateBillingContract(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        {
+            DateTime now = DateTime.Now;
+            string query = "update organization " +
+                $"set organizationName = '{orgName}', billingContactName = '{contactName}', billingContactPhone = '{contactPhone}', billingContactEmail = '{contactEmail}', " +
+                $"active = {isActive}, notes = '{orgNotes}', unaffiliatedDefault = {isDefault},lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+                $"lastUpdateBy = '{userName}' where organizationId = {orgId};";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
+                $"o.unaffiliatedDefault from organization o where o.organizationId = {orgId};";
+
+            cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int orgID = Convert.ToInt32(dataReader[0]);
+                string organizationName = dataReader[1].ToString();
+                string billingContactName = dataReader[2].ToString();
+                string billingContactPhone = dataReader[3].ToString();
+                string billingContactEmail = dataReader[4].ToString();
+                bool active = Convert.ToBoolean(dataReader[5]);
+                string notes = dataReader[6].ToString();
+                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+
+                Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault);
+                IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
+                if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = update; }
+            }
+
+            connection.Close();
+        }
+
+        public static void RemoveBillingContract(int contractId, int orgId, int customerId = -1)
+        {
+            string query = $"delete from billing_contract where billingContractId = {contractId}";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();
+
+            Organization updateOrg = MainScreen.Organizations.Where(x => x.OrganizationID == orgId).Single();
+            updateOrg.RemoveAssociatedContract(contractId);
+            IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == updateOrg.OrganizationID).Select(x => x.Index);
+            if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = updateOrg; }
+
+            if(customerId != -1)
+            {
+                Customer updateCustomer = MainScreen.Customers.Where(x => x.CustomerID == customerId).Single();
+                updateCustomer.RemoveAssociatedContract(contractId);
+                IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == updateCustomer.CustomerID).Select(x => x.Index);
+                if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()] = updateCustomer; }
+            }
+
             connection.Close();
         }
 

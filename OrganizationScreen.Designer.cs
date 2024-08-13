@@ -217,6 +217,7 @@
             this.OrganizationScreen_AddBillingContract_Btn.TabIndex = 8;
             this.OrganizationScreen_AddBillingContract_Btn.Text = "+Add Billing Contract";
             this.OrganizationScreen_AddBillingContract_Btn.UseVisualStyleBackColor = true;
+            this.OrganizationScreen_AddBillingContract_Btn.Click += new System.EventHandler(this.OrganizationScreen_AddBillingContract_Btn_Click);
             // 
             // OrganizationScreen_EditBillingContract_Btn
             // 
@@ -226,6 +227,7 @@
             this.OrganizationScreen_EditBillingContract_Btn.TabIndex = 9;
             this.OrganizationScreen_EditBillingContract_Btn.Text = "Edit Billing Contract";
             this.OrganizationScreen_EditBillingContract_Btn.UseVisualStyleBackColor = true;
+            this.OrganizationScreen_EditBillingContract_Btn.Click += new System.EventHandler(this.OrganizationScreen_EditBillingContract_Btn_Click);
             // 
             // OrganizationScreen_DeleteBillingContract_Btn
             // 
@@ -235,6 +237,7 @@
             this.OrganizationScreen_DeleteBillingContract_Btn.TabIndex = 10;
             this.OrganizationScreen_DeleteBillingContract_Btn.Text = "Delete Billing Contract";
             this.OrganizationScreen_DeleteBillingContract_Btn.UseVisualStyleBackColor = true;
+            this.OrganizationScreen_DeleteBillingContract_Btn.Click += new System.EventHandler(this.OrganizationScreen_DeleteBillingContract_Btn_Click);
             // 
             // OrganizationScreen
             // 

@@ -61,23 +61,19 @@ namespace C868
         {
             try
             {
-                int appointmentID = -1;
-                if (OrganizationScreen_OrganizationID_Text.Text != "") { appointmentID = Convert.ToInt32(OrganizationScreen_OrganizationID_Text.Text); }
-                string type = "";
-                int customerID = -1;
-                DateTime localNow = DateTime.Now.ToLocalTime();
-                TimeZoneInfo local = TimeZoneInfo.Local;
-                TimeZoneInfo est = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                DateTime estNow = TimeZoneInfo.ConvertTime(localNow, local, est);
-                TimeSpan businessHoursStart = new DateTime(estNow.Year, estNow.Month, estNow.Day, 9, 0, 0).TimeOfDay;
-                TimeSpan businessHoursEnd = new DateTime(estNow.Year, estNow.Month, estNow.Day, 17, 0, 0).TimeOfDay;
-                DateTime start = Convert.ToDateTime(OrganizationScreen_Start_DatePicker.Value);
-                DateTime end = Convert.ToDateTime(OrganizationScreen_End_DatePicker.Value);
+                int orgID = -1;
+                string orgName = "";
+                string contactName = "";
+                string contactPhone = "";
+                string contactEmail = "";
+                bool isActive = OrganizationScreen_Active_CheckBox.Checked;
+                string notes = OrganizationScreen_Notes_Text.Text;
                 List<string> message = new List<string>();
-                if (OrganizationScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = OrganizationScreen_Type_Combo.Text.ToString(); }
-                if (OrganizationScreen_Customer_Combo.SelectedItem == null) { message.Add("Customer"); } else { customerID = Convert.ToInt32(OrganizationScreen_Customer_Combo.SelectedValue); }
-                if (start == null) { message.Add("Start"); }
-                if (end == null) { message.Add("End"); }
+                if (OrganizationScreen_OrganizationID_Text.Text != "") { orgID = Convert.ToInt32(OrganizationScreen_OrganizationID_Text.Text); }
+                if (OrganizationScreen_OrganizationName_Text.Text == "") { message.Add("Organization Name"); } else { orgName = OrganizationScreen_OrganizationName_Text.Text; }
+                if (OrganizationScreen_BillingContactName_Text.Text == "") { message.Add("Billing Contact Name"); } else { contactName = OrganizationScreen_BillingContactName_Text.Text; }
+                if (OrganizationScreen_BillingContactPhone_Text.Text == "") { message.Add("Billing Contact Phone"); } else { contactPhone = OrganizationScreen_BillingContactPhone_Text.Text; }
+                if (OrganizationScreen_BillingContactEmail_Text.Text == "") { message.Add("Billing Contact Email"); } else { contactEmail = OrganizationScreen_BillingContactEmail_Text.Text; }
 
                 int errorCount = message.Count;
 
@@ -102,40 +98,23 @@ namespace C868
                     throw new ApplicationException(error);
                 }
 
-                // appointment scheduling validation handling
-                if (start > end)
+                if (OrganizationScreen_OrganizationID_Text.Text != "")
                 {
-                    throw new ApplicationException("Appointment end cannot be set before appointment start.");
-                }
-
-                if ((start.DayOfWeek == DayOfWeek.Saturday) || (start.DayOfWeek == DayOfWeek.Sunday) || (end.DayOfWeek == DayOfWeek.Saturday) || (end.DayOfWeek == DayOfWeek.Sunday))
-                {
-                    throw new ApplicationException("Appointments cannot be setup outside of normal business days: Monday - Friday.");
-                }
-
-                if ((TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay > businessHoursEnd) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay > businessHoursEnd))
-                {
-                    throw new ApplicationException($"Appointments cannot be set outside of normal business hours: \n9 am - 5 pm EST.\n\nAppointment Start Time (EST): {TimeZoneInfo.ConvertTime(start, local, est).ToShortTimeString()}\nAppointment End Time (EST): {TimeZoneInfo.ConvertTime(end, local, est).ToShortTimeString()}");
-                }
-
-                foreach (Appointment appointment in MainScreen.Appointments)
-                {
-                    if (start < appointment.End && appointment.Start < end)
+                    Database.UpdateOrganization(orgID, MainScreen.User.UserName, orgName, contactName, contactPhone, contactEmail, isActive, notes);
+                    Organization org = MainScreen.Organizations.Where(x => x.OrganizationID == orgID).Single();
+                    if (org.AssociatedContracts.Count > 0)
                     {
-                        if (appointmentID != appointment.AppointmentID)
-                        {
-                            throw new ApplicationException($"Appointment overlaps with another appointment.\n\nCustomer: {appointment.CustomerName}\nAppointment Start: {appointment.Start}\nAppointment End: {appointment.End}");
-                        }
+                        //database call to add contracts foreach
                     }
-                }
-
-                if (OrganizationScreen_OrganizationID_Text.Text == "")
-                {
-                    Database.AddAppointment(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
                 }
                 else
                 {
-                    Database.UpdateAppointment(appointmentID, customerID, type, start, end, MainScreen.User.UserName);
+                    int newOrgID = Database.AddOrganization(MainScreen.User.UserName, orgName, contactName, contactPhone, contactEmail, isActive, notes);
+                    Organization org = MainScreen.Organizations.Where(x => x.OrganizationID == newOrgID).Single();
+                    if(org.AssociatedContracts.Count > 0)
+                    {
+                        //database call to add contracts foreach
+                    }
                 }
                 Close();
             }
@@ -146,6 +125,50 @@ namespace C868
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
+            }
+        }
+
+        private void OrganizationScreen_AddBillingContract_Btn_Click(object sender, EventArgs e)
+        {
+            new BillingContractScreen().ShowDialog();
+        }
+
+        private void OrganizationScreen_EditBillingContract_Btn_Click(object sender, EventArgs e)
+        {
+            //TODO: Wrap in a try/catch
+            if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
+            {
+                new BillingContractScreen((BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
+                OrganizationScreen_BillingContractGridView.ClearSelection();
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void OrganizationScreen_DeleteBillingContract_Btn_Click(object sender, EventArgs e)
+        {
+            //TODO: Wrap in a try/catch
+            if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
+            {
+                BillingContract contract = (BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem;
+                if (Database.BillingContractAssociatedTimeCheck(contract.BillingContractID)) { MessageBox.Show("This Billing Contract has Time associated to it and cannot be deleted."); return; }
+
+                DialogResult answer = MessageBox.Show("Are you sure you want to hard delete this?", "Confirm Delete", MessageBoxButtons.YesNo);
+                if (answer == DialogResult.Yes)
+                {
+                    Database.RemoveBillingContract(contract.BillingContractID);
+                    
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
             }
         }
     }
