@@ -555,10 +555,8 @@ namespace C868
 
         public static void GetBillingContracts()
         {
-            //TODO: Get them all and then use the orgID to find the org and then associate the billing contract using it's built in function
-            // where customerId is not null, use the customerId to find the customer and then associate the billing contract using it's built in function
-            string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                "o.unaffiliatedDefault from organization o;";
+            string query = "select b.billingContractId, b.title, b.reference, b.organizationId, b.hourlyRate, b.totalAvailableHours, b.start, b.end, b.notes, b.customerId, " +
+                "b.flatRate from billing_contract b;";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -566,22 +564,32 @@ namespace C868
 
             while (dataReader.Read())
             {
-                int orgID = Convert.ToInt32(dataReader[0]);
-                string orgName = dataReader[1].ToString();
-                string contactName = dataReader[2].ToString();
-                string contactPhone = dataReader[3].ToString();
-                string contactEmail = dataReader[4].ToString();
-                bool isActive = Convert.ToBoolean(dataReader[5]);
-                string orgNotes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[0]);
+                string title = dataReader[1].ToString();
+                string reference = dataReader[2].ToString();
+                int orgID = Convert.ToInt32(dataReader[3]);
+                decimal hourlyRate = Convert.ToDecimal(dataReader[4]);
+                decimal totalAvailableHours = Convert.ToDecimal(dataReader[5]);
+                DateTime start = Convert.ToDateTime(dataReader[6]);
+                DateTime end = Convert.ToDateTime(dataReader[7]);
+                string notes = dataReader[8].ToString();
+                int? customerID = Convert.ToInt32(dataReader[9]);
+                decimal flatRate = Convert.ToDecimal(dataReader[10]);
 
-                MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes, unaffiliatedDefault));
+                BillingContract newContract = new BillingContract(contractID,title,orgID,start.ToLocalTime(),end.ToLocalTime(),hourlyRate,flatRate,totalAvailableHours,reference,notes,customerID);
+                IEnumerable<int> orgIndex = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == newContract.OrganizationID).Select(x => x.Index);
+                if (orgIndex != null) { MainScreen.Organizations[orgIndex.SingleOrDefault()].AddAssociatedContract(newContract); }
+
+                if (customerID != null) 
+                {
+                    IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == newContract.CustomerID).Select(x => x.Index);
+                    if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].AddAssociatedContract(newContract); } 
+                }
             }
-
             connection.Close();
         }
 
-        public static int AddBillingContract(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        public static void AddBillingContract(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
         {
             //TODO: when adding, make sure it accommodates org and customer variants; customer can be null while org cannot
             int orgID = -1;
@@ -596,28 +604,38 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                "o.unaffiliatedDefault from organization o order by o.organizationId desc limit 1;";
+            query = "select b.billingContractId, b.title, b.reference, b.organizationId, b.hourlyRate, b.totalAvailableHours, b.start, b.end, b.notes, b.customerId, " +
+                "b.flatRate from billing_contract b order by b.billingContractId desc limit 1;";
 
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
             while (dataReader.Read())
             {
-                orgID = Convert.ToInt32(dataReader[0]);
-                string organizationName = dataReader[1].ToString();
-                string billingContactName = dataReader[2].ToString();
-                string billingContactPhone = dataReader[3].ToString();
-                string billingContactEmail = dataReader[4].ToString();
-                bool active = Convert.ToBoolean(dataReader[5]);
-                string notes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[0]);
+                string title = dataReader[1].ToString();
+                string reference = dataReader[2].ToString();
+                int orgID = Convert.ToInt32(dataReader[3]);
+                decimal hourlyRate = Convert.ToDecimal(dataReader[4]);
+                decimal totalAvailableHours = Convert.ToDecimal(dataReader[5]);
+                DateTime start = Convert.ToDateTime(dataReader[6]);
+                DateTime end = Convert.ToDateTime(dataReader[7]);
+                string notes = dataReader[8].ToString();
+                int? customerID = Convert.ToInt32(dataReader[9]);
+                decimal flatRate = Convert.ToDecimal(dataReader[10]);
 
-                MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault));
+                BillingContract newContract = new BillingContract(contractID, title, orgID, start.ToLocalTime(), end.ToLocalTime(), hourlyRate, flatRate, totalAvailableHours, reference, notes, customerID);
+                IEnumerable<int> orgIndex = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == newContract.OrganizationID).Select(x => x.Index);
+                if (orgIndex != null) { MainScreen.Organizations[orgIndex.SingleOrDefault()].AddAssociatedContract(newContract); }
+
+                if (customerID != null)
+                {
+                    IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == newContract.CustomerID).Select(x => x.Index);
+                    if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].AddAssociatedContract(newContract); }
+                }
             }
 
             connection.Close();
-            return orgID;
         }
 
         public static void UpdateBillingContract(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
@@ -665,17 +683,13 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            Organization updateOrg = MainScreen.Organizations.Where(x => x.OrganizationID == orgId).Single();
-            updateOrg.RemoveAssociatedContract(contractId);
-            IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == updateOrg.OrganizationID).Select(x => x.Index);
-            if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = updateOrg; }
+            IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == orgId).Select(x => x.Index);
+            if (index != null) { MainScreen.Organizations[index.SingleOrDefault()].RemoveAssociatedContract(contractId);}
 
             if(customerId != -1)
             {
-                Customer updateCustomer = MainScreen.Customers.Where(x => x.CustomerID == customerId).Single();
-                updateCustomer.RemoveAssociatedContract(contractId);
-                IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == updateCustomer.CustomerID).Select(x => x.Index);
-                if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()] = updateCustomer; }
+                IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == customerId).Select(x => x.Index);
+                if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].RemoveAssociatedContract(contractId); }
             }
 
             connection.Close();

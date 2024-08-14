@@ -4,11 +4,10 @@ namespace C868
 {
     public class BillingContract
     {
-        //notes,customerId,flatRate
         public int BillingContractID { get; set; }
         public string Title { get; set; }
         public string Reference { get; set; }
-        public int OrganizationId { get; set; }
+        public int OrganizationID { get; set; }
         public decimal HourlyRate { get; set; }
         public decimal TotalAvailableHours { get; set; }
         public DateTime Start { get; set; }
@@ -22,7 +21,7 @@ namespace C868
             BillingContractID = contractId;
             Title = title;
             Reference = reference;
-            OrganizationId = orgId;
+            OrganizationID = orgId;
             HourlyRate = hourlyRate;
             TotalAvailableHours = availHours;
             Start = start;
