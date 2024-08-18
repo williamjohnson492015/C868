@@ -29,13 +29,17 @@ namespace C868
 
         public void AddAssociatedContract(BillingContract contract)
         {
-            //move this logic to database.cs
             AssociatedContracts.Add(contract);
+        }
+
+        public void UpdateAssociatedContract(BillingContract contract)
+        {
+            RemoveAssociatedContract(contract.BillingContractID);
+            AddAssociatedContract(contract);
         }
 
         public void RemoveAssociatedContract(int contractId)
         {
-            //move this logic to database.cs & delete the billing contract record
             AssociatedContracts.Remove(LookupAssociatedContract(contractId));
         }
 

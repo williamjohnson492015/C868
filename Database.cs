@@ -589,16 +589,17 @@ namespace C868
             connection.Close();
         }
 
-        public static void AddBillingContract(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        public static void AddBillingContract(string userName, string billingTitle, string billingRef, int orgId, DateTime startDate, DateTime endDate, decimal hourly = 0, decimal totalHours = 0, string billingNotes = null, int? customerId = null, decimal flat = 0)
         {
-            //TODO: when adding, make sure it accommodates org and customer variants; customer can be null while org cannot
-            int orgID = -1;
             DateTime now = DateTime.Now;
-            string query = "insert into organization " +
-                "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,unaffiliatedDefault,createDate,createdBy,lastUpdate,lastUpdateBy) " +
-                $"values('{orgName}','{contactName}','{contactPhone}','{contactEmail}',{isActive},'{orgNotes}',{isDefault}," +
+            string query = "insert into billing_contract " +
+                "(title,reference,organizationId,hourlyRate,totalAvailableHours,start,end,createDate,createdBy,lastUpdate,lastUpdateBy,notes,customerId,flatRate) " +
+                $"values('{billingTitle}','{billingRef}',{orgId},{hourly},{totalHours}," +
+                $"'{startDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+                $"'{endDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
-                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}')," +
+                $"'{billingNotes}',{customerId},{flat};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -638,38 +639,50 @@ namespace C868
             connection.Close();
         }
 
-        public static void UpdateBillingContract(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        public static void UpdateBillingContract(int billingContractId, string userName, string billingTitle, string billingRef, int orgId, DateTime startDate, DateTime endDate, decimal hourly = 0, decimal totalHours = 0, string billingNotes = null, int? customerId = null, decimal flat = 0)
         {
             DateTime now = DateTime.Now;
-            string query = "update organization " +
-                $"set organizationName = '{orgName}', billingContactName = '{contactName}', billingContactPhone = '{contactPhone}', billingContactEmail = '{contactEmail}', " +
-                $"active = {isActive}, notes = '{orgNotes}', unaffiliatedDefault = {isDefault},lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $"lastUpdateBy = '{userName}' where organizationId = {orgId};";
+            string query = "update billing_contract " +
+                $"set title = '{billingTitle}', reference = '{billingRef}', organizationId = '{orgId}', " +
+                $"start = '{startDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', " +
+                $"end = '{endDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', " +
+                $"hourlyRate = {hourly}, totalAvailableHours = {totalHours}, notes = '{billingNotes}', customerId = {customerId}, flatRate = {flat}, " +
+                $"lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', lastUpdateBy = '{userName}' " +
+                $"where billingContractId = {billingContractId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                $"o.unaffiliatedDefault from organization o where o.organizationId = {orgId};";
+            query = "select b.billingContractId, b.title, b.reference, b.organizationId, b.hourlyRate, b.totalAvailableHours, b.start, b.end, b.notes, b.customerId, " +
+                $"b.flatRate from billing_contract b where b.billingContractId = {billingContractId};";
 
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
 
             while (dataReader.Read())
             {
-                int orgID = Convert.ToInt32(dataReader[0]);
-                string organizationName = dataReader[1].ToString();
-                string billingContactName = dataReader[2].ToString();
-                string billingContactPhone = dataReader[3].ToString();
-                string billingContactEmail = dataReader[4].ToString();
-                bool active = Convert.ToBoolean(dataReader[5]);
-                string notes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
+                int contractID = Convert.ToInt32(dataReader[0]);
+                string title = dataReader[1].ToString();
+                string reference = dataReader[2].ToString();
+                int orgID = Convert.ToInt32(dataReader[3]);
+                decimal hourlyRate = Convert.ToDecimal(dataReader[4]);
+                decimal totalAvailableHours = Convert.ToDecimal(dataReader[5]);
+                DateTime start = Convert.ToDateTime(dataReader[6]);
+                DateTime end = Convert.ToDateTime(dataReader[7]);
+                string notes = dataReader[8].ToString();
+                int? customerID = Convert.ToInt32(dataReader[9]);
+                decimal flatRate = Convert.ToDecimal(dataReader[10]);
 
-                Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault);
-                IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
-                if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = update; }
+                BillingContract update = new BillingContract(contractID, title, orgID, start.ToLocalTime(), end.ToLocalTime(), hourlyRate, flatRate, totalAvailableHours, reference, notes, customerID);
+                IEnumerable<int> orgIndex = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
+                if (orgIndex != null) { MainScreen.Organizations[orgIndex.SingleOrDefault()].UpdateAssociatedContract(update); }
+
+                if (customerID != null)
+                {
+                    IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == update.CustomerID).Select(x => x.Index);
+                    if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].UpdateAssociatedContract(update); }
+                }
             }
 
             connection.Close();
