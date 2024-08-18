@@ -21,36 +21,37 @@ namespace C868
 {
     public partial class BillingContractScreen : Form
     {
-        public BillingContractScreen()
+        private int orgID;
+        private int? customerID;
+
+        public BillingContractScreen(int orgId, int? customerId = null)
         {
             InitializeComponent();
-            BillingContractScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            BillingContractScreen_Type_Combo.SelectedItem = null;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            BillingContractScreen_Customer_Combo.DataSource = customerDictionary;
-            BillingContractScreen_Customer_Combo.DisplayMember = "Value";
-            BillingContractScreen_Customer_Combo.ValueMember = "Key";
-            BillingContractScreen_Customer_Combo.SelectedItem = null;
+            orgID = orgId;
+            customerID = customerId;
             DateTime localNow = DateTime.Now.ToLocalTime();
-            BillingContractScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
-            BillingContractScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
-            ActiveControl = BillingContractScreen_Type_Combo;
+            BillingContractScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day);
+            BillingContractScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day);
+            ActiveControl = BillingContractScreen_Title_Text;
         }
 
-        public BillingContractScreen(Appointment appointment)
+        public BillingContractScreen(BillingContract contract)
         {
             InitializeComponent();
-            BillingContractScreen_BillingContractID_Text.Text = appointment.AppointmentID.ToString();
-            BillingContractScreen_Type_Combo.DataSource = MainScreen.AppointmentTypes;
-            BillingContractScreen_Type_Combo.SelectedItem = appointment.Type;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            BillingContractScreen_Customer_Combo.DataSource = customerDictionary;
-            BillingContractScreen_Customer_Combo.DisplayMember = "Value";
-            BillingContractScreen_Customer_Combo.ValueMember = "Key";
-            BillingContractScreen_Customer_Combo.SelectedItem = appointment.CustomerName;
-            BillingContractScreen_Start_DatePicker.Value = appointment.Start;
-            BillingContractScreen_End_DatePicker.Value = appointment.End;
-            ActiveControl = BillingContractScreen_Type_Combo;
+            orgID = contract.OrganizationID;
+            customerID = contract.CustomerID;
+            BillingContractScreen_BillingContractID_Text.Text = contract.BillingContractID.ToString();
+            BillingContractScreen_Title_Text.Text = contract.Title;
+            BillingContractScreen_Reference_Text.Text = contract.Reference;
+            if (contract.Type == "Hourly") { BillingContractScreen_HourlyRate_RadioBtn.Checked = true; }
+            if (contract.Type == "Flat") { BillingContractScreen_FlatRate_RadioBtn.Checked = true; }
+            BillingContractScreen_HourlyRate_Text.Text = contract.HourlyRate.ToString();
+            BillingContractScreen_TotalAvailableHours_Text.Text = contract.TotalAvailableHours.ToString();
+            BillingContractScreen_FlatRate_Text.Text = contract.FlatRate.ToString();
+            BillingContractScreen_Start_DatePicker.Value = contract.Start;
+            BillingContractScreen_End_DatePicker.Value = contract.End;
+            BillingContractScreen_Notes_Text.Text = contract.Notes;
+            ActiveControl = BillingContractScreen_Title_Text;
         }
 
         private void BillingContractScreen_Cancel_Btn_Click(object sender, EventArgs e)
@@ -62,21 +63,24 @@ namespace C868
         {
             try
             {
-                int appointmentID = -1;
-                if (BillingContractScreen_BillingContractID_Text.Text != "") { appointmentID = Convert.ToInt32(BillingContractScreen_BillingContractID_Text.Text); }
+                int contractID = -1;
+                if (BillingContractScreen_BillingContractID_Text.Text != "") { contractID = Convert.ToInt32(BillingContractScreen_BillingContractID_Text.Text); }
+                string title = "";
+                string reference = "";
                 string type = "";
-                int customerID = -1;
-                DateTime localNow = DateTime.Now.ToLocalTime();
-                TimeZoneInfo local = TimeZoneInfo.Local;
-                TimeZoneInfo est = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                DateTime estNow = TimeZoneInfo.ConvertTime(localNow, local, est);
-                TimeSpan businessHoursStart = new DateTime(estNow.Year, estNow.Month, estNow.Day, 9, 0, 0).TimeOfDay;
-                TimeSpan businessHoursEnd = new DateTime(estNow.Year, estNow.Month, estNow.Day, 17, 0, 0).TimeOfDay;
+                if (BillingContractScreen_HourlyRate_RadioBtn.Checked == true) { type = "Hourly"; }
+                if (BillingContractScreen_FlatRate_RadioBtn.Checked == true) { type = "Flat"; }
+                decimal hourlyRate = decimal.TryParse(BillingContractScreen_HourlyRate_Text.Text, out hourlyRate) ? hourlyRate : 0;
+                decimal flatRate = decimal.TryParse(BillingContractScreen_FlatRate_Text.Text, out flatRate) ? flatRate : 0;
+                decimal totalAvailableHours = decimal.TryParse(BillingContractScreen_TotalAvailableHours_Text.Text, out totalAvailableHours) ? totalAvailableHours : 0;
                 DateTime start = Convert.ToDateTime(BillingContractScreen_Start_DatePicker.Value);
                 DateTime end = Convert.ToDateTime(BillingContractScreen_End_DatePicker.Value);
+                string notes = BillingContractScreen_Notes_Text.Text;
                 List<string> message = new List<string>();
-                if (BillingContractScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = BillingContractScreen_Type_Combo.Text.ToString(); }
-                if (BillingContractScreen_Customer_Combo.SelectedItem == null) { message.Add("Customer"); } else { customerID = Convert.ToInt32(BillingContractScreen_Customer_Combo.SelectedValue); }
+                if (BillingContractScreen_Title_Text.Text == "") { message.Add("Title"); } else { title = BillingContractScreen_Title_Text.Text; }
+                if (BillingContractScreen_Reference_Text.Text == "") { message.Add("Reference"); } else { reference = BillingContractScreen_Reference_Text.Text; }
+                if (type == "Hourly" && hourlyRate == 0) { message.Add("Hourly Rate"); }
+                if (type == "Flat" && flatRate == 0) { message.Add("Flat Rate"); }
                 if (start == null) { message.Add("Start"); }
                 if (end == null) { message.Add("End"); }
 
@@ -103,40 +107,34 @@ namespace C868
                     throw new ApplicationException(error);
                 }
 
-                // appointment scheduling validation handling
+                // validation handling
+                if (hourlyRate < 0)
+                {
+                    throw new ApplicationException("Hourly Rate cannot be less than 0.");
+                }
+
+                if (flatRate < 0)
+                {
+                    throw new ApplicationException("Flat Rate cannot be less than 0.");
+                }
+
+                if (totalAvailableHours < 0)
+                {
+                    throw new ApplicationException("Available Hours cannot be less than 0.");
+                }
+
                 if (start > end)
                 {
-                    throw new ApplicationException("Appointment end cannot be set before appointment start.");
+                    throw new ApplicationException("Billing Contract End cannot be set before Billing Contract Start.");
                 }
-
-                if ((start.DayOfWeek == DayOfWeek.Saturday) || (start.DayOfWeek == DayOfWeek.Sunday) || (end.DayOfWeek == DayOfWeek.Saturday) || (end.DayOfWeek == DayOfWeek.Sunday))
-                {
-                    throw new ApplicationException("Appointments cannot be setup outside of normal business days: Monday - Friday.");
-                }
-
-                if ((TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(start, local, est).TimeOfDay > businessHoursEnd) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay < businessHoursStart) || (TimeZoneInfo.ConvertTime(end, local, est).TimeOfDay > businessHoursEnd))
-                {
-                    throw new ApplicationException($"Appointments cannot be set outside of normal business hours: \n9 am - 5 pm EST.\n\nAppointment Start Time (EST): {TimeZoneInfo.ConvertTime(start, local, est).ToShortTimeString()}\nAppointment End Time (EST): {TimeZoneInfo.ConvertTime(end, local, est).ToShortTimeString()}");
-                }
-
-                foreach (Appointment appointment in MainScreen.Appointments)
-                {
-                    if (start < appointment.End && appointment.Start < end)
-                    {
-                        if (appointmentID != appointment.AppointmentID)
-                        {
-                            throw new ApplicationException($"Appointment overlaps with another appointment.\n\nCustomer: {appointment.CustomerName}\nAppointment Start: {appointment.Start}\nAppointment End: {appointment.End}");
-                        }
-                    }
-                }
-
+                                
                 if (BillingContractScreen_BillingContractID_Text.Text == "")
                 {
-                    Database.AddAppointment(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
+                    Database.AddBillingContract(MainScreen.User.UserName,title,reference,orgID,start,end,type,hourlyRate,totalAvailableHours,notes,customerID,flatRate);
                 }
                 else
                 {
-                    Database.UpdateAppointment(appointmentID, customerID, type, start, end, MainScreen.User.UserName);
+                    Database.UpdateBillingContract(contractID, MainScreen.User.UserName, title, reference, orgID, start, end, type, hourlyRate, totalAvailableHours, notes, customerID, flatRate);
                 }
                 Close();
             }
@@ -147,6 +145,26 @@ namespace C868
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
+            }
+        }
+
+        private void BillingContractScreen_HourlyRate_RadioBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (BillingContractScreen_HourlyRate_RadioBtn.Checked)
+            {
+                BillingContractScreen_FlatRate_Text.Clear();
+                BillingContractScreen_FlatRate_Text.ReadOnly = true;
+                BillingContractScreen_HourlyRate_Text.ReadOnly = false;
+            }
+        }
+
+        private void BillingContractScreen_FlatRate_RadioBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (BillingContractScreen_FlatRate_RadioBtn.Checked)
+            {
+                BillingContractScreen_HourlyRate_Text.Clear();
+                BillingContractScreen_HourlyRate_Text.ReadOnly = true;
+                BillingContractScreen_FlatRate_Text.ReadOnly = false;
             }
         }
     }

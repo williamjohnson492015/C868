@@ -42,14 +42,14 @@
             this.BillingContractScreen_Title_Text = new System.Windows.Forms.TextBox();
             this.BillingContractScreen_Reference_Label = new System.Windows.Forms.Label();
             this.BillingContractScreen_Reference_Text = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.OrganizationScreen_Notes_Text = new System.Windows.Forms.TextBox();
-            this.OrganizationScreen_Notes_Label = new System.Windows.Forms.Label();
+            this.BillingContractScreen_HourlyRate_Text = new System.Windows.Forms.TextBox();
+            this.BillingContractScreen_TotalAvailableHours_Text = new System.Windows.Forms.TextBox();
+            this.BillingContractScreen_FlatRate_Text = new System.Windows.Forms.TextBox();
+            this.BillingContractScreen_HourlyRate_Label = new System.Windows.Forms.Label();
+            this.BillingContractScreen_TotalAvailableHours_Label = new System.Windows.Forms.Label();
+            this.BillingContractScreen_FlatRate_Label = new System.Windows.Forms.Label();
+            this.BillingContractScreen_Notes_Text = new System.Windows.Forms.TextBox();
+            this.BillingContractScreen_Notes_Label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BillingContractScreen_BillingContractID_Text
@@ -118,7 +118,7 @@
             // 
             // BillingContractScreen_Start_DatePicker
             // 
-            this.BillingContractScreen_Start_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy hh\':\'mm tt";
+            this.BillingContractScreen_Start_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy";
             this.BillingContractScreen_Start_DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.BillingContractScreen_Start_DatePicker.Location = new System.Drawing.Point(129, 320);
             this.BillingContractScreen_Start_DatePicker.Name = "BillingContractScreen_Start_DatePicker";
@@ -127,7 +127,7 @@
             // 
             // BillingContractScreen_End_DatePicker
             // 
-            this.BillingContractScreen_End_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy hh\':\'mm tt";
+            this.BillingContractScreen_End_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy";
             this.BillingContractScreen_End_DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.BillingContractScreen_End_DatePicker.Location = new System.Drawing.Point(129, 365);
             this.BillingContractScreen_End_DatePicker.Name = "BillingContractScreen_End_DatePicker";
@@ -145,6 +145,7 @@
             this.BillingContractScreen_HourlyRate_RadioBtn.TabStop = true;
             this.BillingContractScreen_HourlyRate_RadioBtn.Text = "Hourly Rate";
             this.BillingContractScreen_HourlyRate_RadioBtn.UseVisualStyleBackColor = true;
+            this.BillingContractScreen_HourlyRate_RadioBtn.CheckedChanged += new System.EventHandler(this.BillingContractScreen_HourlyRate_RadioBtn_CheckedChanged);
             // 
             // BillingContractScreen_FlatRate_RadioBtn
             // 
@@ -155,6 +156,7 @@
             this.BillingContractScreen_FlatRate_RadioBtn.TabIndex = 6;
             this.BillingContractScreen_FlatRate_RadioBtn.Text = "Flat Rate";
             this.BillingContractScreen_FlatRate_RadioBtn.UseVisualStyleBackColor = true;
+            this.BillingContractScreen_FlatRate_RadioBtn.CheckedChanged += new System.EventHandler(this.BillingContractScreen_FlatRate_RadioBtn_CheckedChanged);
             // 
             // BillingContractScreen_Title_Text
             // 
@@ -179,85 +181,85 @@
             this.BillingContractScreen_Reference_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_Reference_Text.TabIndex = 4;
             // 
-            // textBox1
+            // BillingContractScreen_HourlyRate_Text
             // 
-            this.textBox1.Location = new System.Drawing.Point(129, 192);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(244, 22);
-            this.textBox1.TabIndex = 7;
+            this.BillingContractScreen_HourlyRate_Text.Location = new System.Drawing.Point(129, 192);
+            this.BillingContractScreen_HourlyRate_Text.Name = "BillingContractScreen_HourlyRate_Text";
+            this.BillingContractScreen_HourlyRate_Text.Size = new System.Drawing.Size(244, 22);
+            this.BillingContractScreen_HourlyRate_Text.TabIndex = 7;
             // 
-            // textBox2
+            // BillingContractScreen_TotalAvailableHours_Text
             // 
-            this.textBox2.Location = new System.Drawing.Point(129, 277);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(244, 22);
-            this.textBox2.TabIndex = 9;
+            this.BillingContractScreen_TotalAvailableHours_Text.Location = new System.Drawing.Point(129, 277);
+            this.BillingContractScreen_TotalAvailableHours_Text.Name = "BillingContractScreen_TotalAvailableHours_Text";
+            this.BillingContractScreen_TotalAvailableHours_Text.Size = new System.Drawing.Size(244, 22);
+            this.BillingContractScreen_TotalAvailableHours_Text.TabIndex = 9;
             // 
-            // textBox3
+            // BillingContractScreen_FlatRate_Text
             // 
-            this.textBox3.Location = new System.Drawing.Point(129, 235);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(244, 22);
-            this.textBox3.TabIndex = 8;
+            this.BillingContractScreen_FlatRate_Text.Location = new System.Drawing.Point(129, 235);
+            this.BillingContractScreen_FlatRate_Text.Name = "BillingContractScreen_FlatRate_Text";
+            this.BillingContractScreen_FlatRate_Text.ReadOnly = true;
+            this.BillingContractScreen_FlatRate_Text.Size = new System.Drawing.Size(244, 22);
+            this.BillingContractScreen_FlatRate_Text.TabIndex = 8;
             // 
-            // label1
+            // BillingContractScreen_HourlyRate_Label
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(40, 195);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 16);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "Hourly Rate:";
+            this.BillingContractScreen_HourlyRate_Label.AutoSize = true;
+            this.BillingContractScreen_HourlyRate_Label.Location = new System.Drawing.Point(40, 195);
+            this.BillingContractScreen_HourlyRate_Label.Name = "BillingContractScreen_HourlyRate_Label";
+            this.BillingContractScreen_HourlyRate_Label.Size = new System.Drawing.Size(81, 16);
+            this.BillingContractScreen_HourlyRate_Label.TabIndex = 18;
+            this.BillingContractScreen_HourlyRate_Label.Text = "Hourly Rate:";
             // 
-            // label2
+            // BillingContractScreen_TotalAvailableHours_Label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(15, 280);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 16);
-            this.label2.TabIndex = 20;
-            this.label2.Text = "Available Hours:";
+            this.BillingContractScreen_TotalAvailableHours_Label.AutoSize = true;
+            this.BillingContractScreen_TotalAvailableHours_Label.Location = new System.Drawing.Point(15, 280);
+            this.BillingContractScreen_TotalAvailableHours_Label.Name = "BillingContractScreen_TotalAvailableHours_Label";
+            this.BillingContractScreen_TotalAvailableHours_Label.Size = new System.Drawing.Size(106, 16);
+            this.BillingContractScreen_TotalAvailableHours_Label.TabIndex = 20;
+            this.BillingContractScreen_TotalAvailableHours_Label.Text = "Available Hours:";
             // 
-            // label3
+            // BillingContractScreen_FlatRate_Label
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(57, 238);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 16);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Flat Rate:";
+            this.BillingContractScreen_FlatRate_Label.AutoSize = true;
+            this.BillingContractScreen_FlatRate_Label.Location = new System.Drawing.Point(57, 238);
+            this.BillingContractScreen_FlatRate_Label.Name = "BillingContractScreen_FlatRate_Label";
+            this.BillingContractScreen_FlatRate_Label.Size = new System.Drawing.Size(64, 16);
+            this.BillingContractScreen_FlatRate_Label.TabIndex = 19;
+            this.BillingContractScreen_FlatRate_Label.Text = "Flat Rate:";
             // 
-            // OrganizationScreen_Notes_Text
+            // BillingContractScreen_Notes_Text
             // 
-            this.OrganizationScreen_Notes_Text.Location = new System.Drawing.Point(451, 26);
-            this.OrganizationScreen_Notes_Text.Multiline = true;
-            this.OrganizationScreen_Notes_Text.Name = "OrganizationScreen_Notes_Text";
-            this.OrganizationScreen_Notes_Text.Size = new System.Drawing.Size(380, 360);
-            this.OrganizationScreen_Notes_Text.TabIndex = 12;
+            this.BillingContractScreen_Notes_Text.Location = new System.Drawing.Point(451, 26);
+            this.BillingContractScreen_Notes_Text.Multiline = true;
+            this.BillingContractScreen_Notes_Text.Name = "BillingContractScreen_Notes_Text";
+            this.BillingContractScreen_Notes_Text.Size = new System.Drawing.Size(380, 360);
+            this.BillingContractScreen_Notes_Text.TabIndex = 12;
             // 
-            // OrganizationScreen_Notes_Label
+            // BillingContractScreen_Notes_Label
             // 
-            this.OrganizationScreen_Notes_Label.AutoSize = true;
-            this.OrganizationScreen_Notes_Label.Location = new System.Drawing.Point(397, 29);
-            this.OrganizationScreen_Notes_Label.Name = "OrganizationScreen_Notes_Label";
-            this.OrganizationScreen_Notes_Label.Size = new System.Drawing.Size(46, 16);
-            this.OrganizationScreen_Notes_Label.TabIndex = 23;
-            this.OrganizationScreen_Notes_Label.Text = "Notes:";
+            this.BillingContractScreen_Notes_Label.AutoSize = true;
+            this.BillingContractScreen_Notes_Label.Location = new System.Drawing.Point(397, 29);
+            this.BillingContractScreen_Notes_Label.Name = "BillingContractScreen_Notes_Label";
+            this.BillingContractScreen_Notes_Label.Size = new System.Drawing.Size(46, 16);
+            this.BillingContractScreen_Notes_Label.TabIndex = 23;
+            this.BillingContractScreen_Notes_Label.Text = "Notes:";
             // 
             // BillingContractScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 451);
-            this.Controls.Add(this.OrganizationScreen_Notes_Text);
-            this.Controls.Add(this.OrganizationScreen_Notes_Label);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.BillingContractScreen_Notes_Text);
+            this.Controls.Add(this.BillingContractScreen_Notes_Label);
+            this.Controls.Add(this.BillingContractScreen_FlatRate_Label);
+            this.Controls.Add(this.BillingContractScreen_TotalAvailableHours_Label);
+            this.Controls.Add(this.BillingContractScreen_HourlyRate_Label);
+            this.Controls.Add(this.BillingContractScreen_FlatRate_Text);
+            this.Controls.Add(this.BillingContractScreen_TotalAvailableHours_Text);
+            this.Controls.Add(this.BillingContractScreen_HourlyRate_Text);
             this.Controls.Add(this.BillingContractScreen_Reference_Text);
             this.Controls.Add(this.BillingContractScreen_Reference_Label);
             this.Controls.Add(this.BillingContractScreen_Title_Text);
@@ -295,14 +297,14 @@
         private System.Windows.Forms.TextBox BillingContractScreen_Title_Text;
         private System.Windows.Forms.Label BillingContractScreen_Reference_Label;
         private System.Windows.Forms.TextBox BillingContractScreen_Reference_Text;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox OrganizationScreen_Notes_Text;
-        private System.Windows.Forms.Label OrganizationScreen_Notes_Label;
+        private System.Windows.Forms.TextBox BillingContractScreen_HourlyRate_Text;
+        private System.Windows.Forms.TextBox BillingContractScreen_TotalAvailableHours_Text;
+        private System.Windows.Forms.TextBox BillingContractScreen_FlatRate_Text;
+        private System.Windows.Forms.Label BillingContractScreen_HourlyRate_Label;
+        private System.Windows.Forms.Label BillingContractScreen_TotalAvailableHours_Label;
+        private System.Windows.Forms.Label BillingContractScreen_FlatRate_Label;
+        private System.Windows.Forms.TextBox BillingContractScreen_Notes_Text;
+        private System.Windows.Forms.Label BillingContractScreen_Notes_Label;
     }
 }
 

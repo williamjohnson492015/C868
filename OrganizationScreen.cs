@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Globalization;
@@ -104,7 +105,10 @@ namespace C868
                     Organization org = MainScreen.Organizations.Where(x => x.OrganizationID == orgID).Single();
                     if (org.AssociatedContracts.Count > 0)
                     {
-                        //database call to add contracts foreach
+                        foreach(BillingContract contract in org.AssociatedContracts)
+                        {
+                            Database.UpdateBillingContract(contract);
+                        }
                     }
                 }
                 else
