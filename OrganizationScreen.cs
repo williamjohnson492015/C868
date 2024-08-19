@@ -22,7 +22,7 @@ namespace C868
 {
     public partial class OrganizationScreen : Form
     {
-        private BindingList<BillingContract> associatedContracts = new BindingList<BillingContract>();
+        public static BindingList<BillingContract> associatedContracts = new BindingList<BillingContract>();
 
         public OrganizationScreen()
         {
@@ -102,22 +102,29 @@ namespace C868
                 if (OrganizationScreen_OrganizationID_Text.Text != "")
                 {
                     Database.UpdateOrganization(orgID, MainScreen.User.UserName, orgName, contactName, contactPhone, contactEmail, isActive, notes);
-                    Organization org = MainScreen.Organizations.Where(x => x.OrganizationID == orgID).Single();
-                    if (org.AssociatedContracts.Count > 0)
+                    foreach (BillingContract contract in associatedContracts)
                     {
-                        foreach(BillingContract contract in org.AssociatedContracts)
+                        if (contract.BillingContractID < 0)
                         {
-                            Database.UpdateBillingContract(contract);
+                            //new billing contracts created during this form's session
+                            Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
+                        }
+                        else
+                        {
+                            //possibly updated existing billing contracts
+                            if (contract != Database.GetBillingContract(contract.BillingContractID))
+                            {
+                                Database.UpdateBillingContract(contract.BillingContractID, MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
+                            }
                         }
                     }
                 }
                 else
                 {
                     int newOrgID = Database.AddOrganization(MainScreen.User.UserName, orgName, contactName, contactPhone, contactEmail, isActive, notes);
-                    Organization org = MainScreen.Organizations.Where(x => x.OrganizationID == newOrgID).Single();
-                    if(org.AssociatedContracts.Count > 0)
+                    foreach(BillingContract contract in associatedContracts)
                     {
-                        //database call to add contracts foreach
+                        Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, newOrgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
                     }
                 }
                 Close();
@@ -134,45 +141,68 @@ namespace C868
 
         private void OrganizationScreen_AddBillingContract_Btn_Click(object sender, EventArgs e)
         {
-            new BillingContractScreen().ShowDialog();
+            new BillingContractScreen(1).ShowDialog();
         }
 
         private void OrganizationScreen_EditBillingContract_Btn_Click(object sender, EventArgs e)
         {
-            //TODO: Wrap in a try/catch
-            if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
+            try
             {
-                new BillingContractScreen((BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
-                OrganizationScreen_BillingContractGridView.ClearSelection();
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        private void OrganizationScreen_DeleteBillingContract_Btn_Click(object sender, EventArgs e)
-        {
-            //TODO: Wrap in a try/catch
-            if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
-            {
-                BillingContract contract = (BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem;
-                if (Database.BillingContractAssociatedTimeCheck(contract.BillingContractID)) { MessageBox.Show("This Billing Contract has Time associated to it and cannot be deleted."); return; }
-
-                DialogResult answer = MessageBox.Show("Are you sure you want to hard delete this?", "Confirm Delete", MessageBoxButtons.YesNo);
-                if (answer == DialogResult.Yes)
+                if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
                 {
-                    Database.RemoveBillingContract(contract.BillingContractID);
-                    
+                    new BillingContractScreen(1,(BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
+                    OrganizationScreen_BillingContractGridView.ClearSelection();
                 }
                 else
                 {
                     return;
                 }
             }
-            else
+            catch (Exception err)
             {
-                return;
+                MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
+            }
+
+        }
+
+        private void OrganizationScreen_DeleteBillingContract_Btn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
+                {
+                    BillingContract contract = (BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem;
+                    if (Database.CheckBillingContractHasAssociatedTime(contract.BillingContractID)) { throw new ApplicationException("This Billing Contract has Time associated to it and cannot be deleted."); }
+
+                    DialogResult answer = MessageBox.Show("Are you sure you want to hard delete this?", "Confirm Delete", MessageBoxButtons.YesNo);
+                    if (answer == DialogResult.Yes)
+                    {
+                        if (contract.BillingContractID < 0)
+                        {
+                            associatedContracts.Remove(contract);                            
+                        }
+                        else
+                        {
+                            Database.RemoveBillingContract(contract.BillingContractID);
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            catch (ApplicationException error)
+            {
+                MessageBox.Show(error.Message, "Validation", MessageBoxButtons.OK);
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
             }
         }
     }

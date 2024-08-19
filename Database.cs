@@ -536,7 +536,7 @@ namespace C868
             connection.Close();
         }
 
-        public static bool BillingContractAssociatedTimeCheck(int contractId)
+        public static bool CheckBillingContractHasAssociatedTime(int contractId)
         {
             int timeCount = 0;
             string query = $"select count(*) from time t where t.BillingContractId = {contractId}";
@@ -553,6 +553,38 @@ namespace C868
             return timeCount > 0;
         }
 
+        public static BillingContract GetBillingContract(int contractId)
+        {
+            BillingContract contract = new BillingContract();
+            string query = "select b.billingContractId, b.title, b.reference, b.organizationId, b.hourlyRate, b.totalAvailableHours, b.start, b.end, b.notes, b.customerId, " +
+                $"b.flatRate, b.type from billing_contract b where b.billingContractId = {contractId};";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                int? customerID;
+                int contractID = Convert.ToInt32(dataReader[0]);
+                string title = dataReader[1].ToString();
+                string reference = dataReader[2].ToString();
+                int orgID = Convert.ToInt32(dataReader[3]);
+                decimal hourlyRate = Convert.ToDecimal(dataReader[4]);
+                decimal totalAvailableHours = Convert.ToDecimal(dataReader[5]);
+                DateTime start = Convert.ToDateTime(dataReader[6]);
+                DateTime end = Convert.ToDateTime(dataReader[7]);
+                string notes = dataReader[8].ToString();
+                if (int.TryParse(dataReader[9].ToString(), out _)) { customerID = Convert.ToInt32(dataReader[9]); } else { customerID = null; }
+                decimal flatRate = Convert.ToDecimal(dataReader[10]);
+                string type = dataReader[11].ToString();
+
+                contract = new BillingContract(contractID, title, orgID, start.ToLocalTime(), end.ToLocalTime(), type, hourlyRate, flatRate, totalAvailableHours, reference, notes, customerID);
+            }
+            connection.Close();
+            return contract;
+        }
+
         public static void GetBillingContracts()
         {
             string query = "select b.billingContractId, b.title, b.reference, b.organizationId, b.hourlyRate, b.totalAvailableHours, b.start, b.end, b.notes, b.customerId, " +
@@ -564,6 +596,7 @@ namespace C868
 
             while (dataReader.Read())
             {
+                int? customerID;
                 int contractID = Convert.ToInt32(dataReader[0]);
                 string title = dataReader[1].ToString();
                 string reference = dataReader[2].ToString();
@@ -573,7 +606,7 @@ namespace C868
                 DateTime start = Convert.ToDateTime(dataReader[6]);
                 DateTime end = Convert.ToDateTime(dataReader[7]);
                 string notes = dataReader[8].ToString();
-                int? customerID = Convert.ToInt32(dataReader[9]);
+                if (int.TryParse(dataReader[9].ToString(), out _)) { customerID = Convert.ToInt32(dataReader[9]); } else { customerID = null; }
                 decimal flatRate = Convert.ToDecimal(dataReader[10]);
                 string type = dataReader[11].ToString();
 
@@ -614,6 +647,7 @@ namespace C868
 
             while (dataReader.Read())
             {
+                int? customerID;
                 int contractID = Convert.ToInt32(dataReader[0]);
                 string title = dataReader[1].ToString();
                 string reference = dataReader[2].ToString();
@@ -623,7 +657,7 @@ namespace C868
                 DateTime start = Convert.ToDateTime(dataReader[6]);
                 DateTime end = Convert.ToDateTime(dataReader[7]);
                 string notes = dataReader[8].ToString();
-                int? customerID = Convert.ToInt32(dataReader[9]);
+                if (int.TryParse(dataReader[9].ToString(), out _)) { customerID = Convert.ToInt32(dataReader[9]); } else { customerID = null; }
                 decimal flatRate = Convert.ToDecimal(dataReader[10]);
                 string type = dataReader[11].ToString();
 
@@ -664,6 +698,7 @@ namespace C868
 
             while (dataReader.Read())
             {
+                int? customerID;
                 int contractID = Convert.ToInt32(dataReader[0]);
                 string title = dataReader[1].ToString();
                 string reference = dataReader[2].ToString();
@@ -673,7 +708,7 @@ namespace C868
                 DateTime start = Convert.ToDateTime(dataReader[6]);
                 DateTime end = Convert.ToDateTime(dataReader[7]);
                 string notes = dataReader[8].ToString();
-                int? customerID = Convert.ToInt32(dataReader[9]);
+                if (int.TryParse(dataReader[9].ToString(), out _)) { customerID = Convert.ToInt32(dataReader[9]); } else { customerID = null; }
                 decimal flatRate = Convert.ToDecimal(dataReader[10]);
                 string type = dataReader[11].ToString();
 
@@ -691,22 +726,31 @@ namespace C868
             connection.Close();
         }
 
-        public static void RemoveBillingContract(int contractId, int orgId, int customerId = -1)
+        public static void RemoveBillingContract(int contractId)
         {
-            string query = $"delete from billing_contract where billingContractId = {contractId}";
-
+            string query = $"select b.organizationId, b.customerId from billing_contract where billingContractId = {contractId};";
+            
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
-            cmd.ExecuteNonQuery();
-
-            IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == orgId).Select(x => x.Index);
-            if (index != null) { MainScreen.Organizations[index.SingleOrDefault()].RemoveAssociatedContract(contractId);}
-
-            if(customerId != -1)
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
             {
-                IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == customerId).Select(x => x.Index);
-                if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].RemoveAssociatedContract(contractId); }
+                int orgId = Convert.ToInt32(dataReader[0]);
+                int customerId = int.TryParse(dataReader[1].ToString(), out customerId) ? customerId : -1;
+
+                IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == orgId).Select(x => x.Index);
+                if (index != null) { MainScreen.Organizations[index.SingleOrDefault()].RemoveAssociatedContract(contractId); }
+
+                if (customerId != -1)
+                {
+                    IEnumerable<int> customerIndex = MainScreen.Customers.Select((c, i) => new { Customer = c, Index = i }).Where(x => x.Customer.CustomerID == customerId).Select(x => x.Index);
+                    if (customerIndex != null) { MainScreen.Customers[customerIndex.SingleOrDefault()].RemoveAssociatedContract(contractId); }
+                }
             }
+
+            query = $"delete from billing_contract where billingContractId = {contractId};";
+            cmd = new MySqlCommand(query, connection);
+            cmd.ExecuteNonQuery();            
 
             connection.Close();
         }

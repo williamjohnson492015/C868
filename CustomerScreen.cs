@@ -21,6 +21,7 @@ namespace C868
 {
     public partial class CustomerScreen : Form
     {
+        public static BindingList<BillingContract> associatedContracts = new BindingList<BillingContract>();
         public CustomerScreen()
         {
             InitializeComponent();

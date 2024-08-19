@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Utilities;
+using System;
 
 namespace C868
 {
@@ -31,6 +32,22 @@ namespace C868
             Notes = notes;
             CustomerID = customerId;
             FlatRate = flatRate;
+        }
+        public BillingContract ()
+        {
+            BillingContractID = -1;
+            Title = "";
+            Reference = "";
+            OrganizationID = -1;
+            Type = "";
+            HourlyRate = 0;
+            TotalAvailableHours = 0;
+            Start = DateTime.Today;
+            End = DateTime.Today;
+            Notes = "";
+            CustomerID = -1;
+            FlatRate = 0;
+
         }
     }
 }
