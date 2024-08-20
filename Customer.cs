@@ -10,7 +10,6 @@ namespace C868
     public class Customer
     {
 
-        public BindingList<BillingContract> AssociatedContracts = new BindingList<BillingContract>();
         public int CustomerID { get; set; }
         public string CustomerName { get; set; }
         public string Phone { get; set; }
@@ -38,33 +37,6 @@ namespace C868
             OrganizationID = orgId;
             Email = email;
             Notes = notes;
-        }
-
-        public void AddAssociatedContract(BillingContract contract)
-        {
-            //move this to database.cs
-            AssociatedContracts.Add(contract);
-        }
-
-        public void UpdateAssociatedContract(BillingContract contract)
-        {
-            RemoveAssociatedContract(contract.BillingContractID);
-            AddAssociatedContract(contract);
-        }
-
-        public void RemoveAssociatedContract(int contractId)
-        {
-            //move this to database.cs when you get to that stage. Also delete the billing contract as well
-            AssociatedContracts.Remove(LookupAssociatedContract(contractId));
-        }
-
-        public BillingContract LookupAssociatedContract(int contractId)
-        {
-            foreach (BillingContract contract in AssociatedContracts)
-            {
-                if (contract.BillingContractID == contractId) { return contract; }
-            }
-            return null;
         }
     }
 }

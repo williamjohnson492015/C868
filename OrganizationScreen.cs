@@ -107,14 +107,14 @@ namespace C868
                         if (contract.BillingContractID < 0)
                         {
                             //new billing contracts created during this form's session
-                            Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
+                            Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.FlatRate);
                         }
                         else
                         {
                             //possibly updated existing billing contracts
                             if (contract != Database.GetBillingContract(contract.BillingContractID))
                             {
-                                Database.UpdateBillingContract(contract.BillingContractID, MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
+                                Database.UpdateBillingContract(contract.BillingContractID, MainScreen.User.UserName, contract.Title, contract.Reference, orgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.FlatRate);
                             }
                         }
                     }
@@ -124,7 +124,7 @@ namespace C868
                     int newOrgID = Database.AddOrganization(MainScreen.User.UserName, orgName, contactName, contactPhone, contactEmail, isActive, notes);
                     foreach(BillingContract contract in associatedContracts)
                     {
-                        Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, newOrgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.CustomerID, contract.FlatRate);
+                        Database.AddBillingContract(MainScreen.User.UserName, contract.Title, contract.Reference, newOrgID, contract.Start, contract.End, contract.Type, contract.HourlyRate, contract.TotalAvailableHours, contract.Notes, contract.FlatRate);
                     }
                 }
                 Close();
@@ -141,7 +141,7 @@ namespace C868
 
         private void OrganizationScreen_AddBillingContract_Btn_Click(object sender, EventArgs e)
         {
-            new BillingContractScreen(1).ShowDialog();
+            new BillingContractScreen().ShowDialog();
         }
 
         private void OrganizationScreen_EditBillingContract_Btn_Click(object sender, EventArgs e)
@@ -150,7 +150,7 @@ namespace C868
             {
                 if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
                 {
-                    new BillingContractScreen(1,(BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
+                    new BillingContractScreen((BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
                     OrganizationScreen_BillingContractGridView.ClearSelection();
                 }
                 else

@@ -14,11 +14,10 @@ namespace C868
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public string Notes { get; set; }
-        public int? CustomerID { get; set; }
         public decimal FlatRate { get; set; }
         public string Type { get; set; }
 
-        public BillingContract(int contractId, string title, int orgId, DateTime start, DateTime end, string type, decimal hourlyRate = 0, decimal flatRate = 0, decimal availHours = 0, string reference = null, string notes = null, int? customerId = null)
+        public BillingContract(int contractId, string title, int orgId, DateTime start, DateTime end, string type, decimal hourlyRate = 0, decimal flatRate = 0, decimal availHours = 0, string reference = null, string notes = null)
         {
             BillingContractID = contractId;
             Title = title;
@@ -30,7 +29,6 @@ namespace C868
             Start = start;
             End = end;
             Notes = notes;
-            CustomerID = customerId;
             FlatRate = flatRate;
         }
         public BillingContract ()
@@ -45,7 +43,6 @@ namespace C868
             Start = DateTime.Today;
             End = DateTime.Today;
             Notes = "";
-            CustomerID = -1;
             FlatRate = 0;
 
         }

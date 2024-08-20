@@ -35,19 +35,19 @@ namespace C868
 
         private BindingSource ReportScreen_AppointmentTypesByMonth_Report()
         {
-            var results = new BindingSource { DataSource = MainScreen.Appointments.GroupBy(groups => new { groups.Type, Month = groups.Start.ToString("MMM"), groups.Start.Year }).Select(group => new { AppointmentType = group.Key.Type, MonthYear = string.Format("{0} {1}", group.Key.Month, group.Key.Year), Count = group.Count() }).OrderBy(o => o.AppointmentType).ThenByDescending(date => date.MonthYear).ToList() };
+            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.Type, Month = groups.Start.ToString("MMM"), groups.Start.Year }).Select(group => new { AppointmentType = group.Key.Type, MonthYear = string.Format("{0} {1}", group.Key.Month, group.Key.Year), Count = group.Count() }).OrderBy(o => o.AppointmentType).ThenByDescending(date => date.MonthYear).ToList() };
             return results;
         }
 
         private BindingSource ReportScreen_SchedulesByCustomer_Report()
         {
-            var results = new BindingSource { DataSource = MainScreen.Appointments.GroupBy(groups => new { groups.CustomerName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.CustomerName).ThenByDescending(o => o.Start).ToList() };
+            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.CustomerName, groups.Start, groups.End }).Select(group => group.Key).Where(x => (x.CustomerName != null) && (x.CustomerName != "")).OrderBy(o => o.CustomerName).ThenByDescending(o => o.Start).ToList() };
             return results;
         }
 
         private BindingSource ReportScreen_SchedulesByUser_Report()
         {
-            var results = new BindingSource { DataSource = MainScreen.Appointments.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
+            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
             return results;
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace C868
+﻿using System.ComponentModel;
+
+namespace C868
 {
     partial class OrganizationScreen
     {

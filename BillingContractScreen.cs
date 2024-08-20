@@ -23,25 +23,20 @@ namespace C868
     public partial class BillingContractScreen : Form
     {
         private int orgID = -1;
-        private int? customerID = null;
-        private int sourceID = -1;
 
-        public BillingContractScreen(int sourceId)
+        public BillingContractScreen()
         {
             InitializeComponent();
             DateTime localNow = DateTime.Now.ToLocalTime();
-            sourceID = sourceId;
             BillingContractScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day);
             BillingContractScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day);
             ActiveControl = BillingContractScreen_Title_Text;
         }
 
-        public BillingContractScreen(int sourceId, BillingContract contract)
+        public BillingContractScreen(BillingContract contract)
         {
             InitializeComponent();
             orgID = contract.OrganizationID;
-            customerID = contract.CustomerID;
-            sourceID = sourceId;
             BillingContractScreen_BillingContractID_Text.Text = contract.BillingContractID.ToString();
             BillingContractScreen_Title_Text.Text = contract.Title;
             BillingContractScreen_Reference_Text.Text = contract.Reference;
@@ -65,9 +60,7 @@ namespace C868
         {
             try
             {
-                int contractID = -1;
-                if (sourceID == 1) { contractID = -(OrganizationScreen.associatedContracts.Count()); }
-                if (sourceID == 2) { contractID = -(CustomerScreen.associatedContracts.Count()); }
+                int contractID = -(OrganizationScreen.associatedContracts.Count());
                 if (BillingContractScreen_BillingContractID_Text.Text != "") { contractID = Convert.ToInt32(BillingContractScreen_BillingContractID_Text.Text); }
                 string title = "";
                 string reference = "";
@@ -134,24 +127,14 @@ namespace C868
                                 
                 if (BillingContractScreen_BillingContractID_Text.Text == "")
                 {
-                    BillingContract contract = new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes, customerID);
-                    if (sourceID == 1) { OrganizationScreen.associatedContracts.Add(contract); }
-                    if (sourceID == 2) { CustomerScreen.associatedContracts.Add(contract); }
+                    BillingContract contract = new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes);
+                    OrganizationScreen.associatedContracts.Add(contract);
                 }
                 else
                 {
-                    BillingContract update = new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes, customerID);
-                    if (sourceID == 1)
-                    {
-                        IEnumerable<int> index = OrganizationScreen.associatedContracts.Select((c, i) => new { Contracts = c, Index = i }).Where(x => x.Contracts.BillingContractID == update.BillingContractID).Select(x => x.Index);
-                        if (index != null) { OrganizationScreen.associatedContracts[index.SingleOrDefault()] = update; }
-                    }
-                    if (sourceID == 2)
-                    {
-                        IEnumerable<int> index = CustomerScreen.associatedContracts.Select((c, i) => new { Contracts = c, Index = i }).Where(x => x.Contracts.BillingContractID == update.BillingContractID).Select(x => x.Index);
-                        if (index != null) { CustomerScreen.associatedContracts[index.SingleOrDefault()] = update; }
-                    }
-
+                    BillingContract update = new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes);
+                    IEnumerable<int> index = OrganizationScreen.associatedContracts.Select((c, i) => new { Contracts = c, Index = i }).Where(x => x.Contracts.BillingContractID == update.BillingContractID).Select(x => x.Index);
+                    if (index != null) { OrganizationScreen.associatedContracts[index.SingleOrDefault()] = update; }
                 }
                 Close();
             }
