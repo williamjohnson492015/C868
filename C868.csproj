@@ -161,6 +161,9 @@
     <EmbeddedResource Include="BillingContractScreen.resx">
       <DependentUpon>BillingContractScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomerScreen.resx">
+      <DependentUpon>CustomerScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OrganizationSearchScreen.resx">
       <DependentUpon>OrganizationSearchScreen.cs</DependentUpon>
     </EmbeddedResource>

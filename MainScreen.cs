@@ -23,6 +23,7 @@ namespace C868
         public static Array TimeTypes = new[] { "Scrum", "Presentation" };
         public static List<City> Cities = new List<City>();
         public static Dictionary<int, string> Countries = new Dictionary<int, string>();
+        public static Dictionary<int, string> OrganizationDictionary = new Dictionary<int, string>();
         public static User User;
         public string language;
         public bool dbCacheInitialized;
@@ -253,8 +254,9 @@ namespace C868
             Database.GetCustomers();
             Database.GetCities();
             Database.GetCountries();
-            Database.GetTimes();
+            //Database.GetTimes();
             Database.GetOrganizations();
+            Database.GetBillingContracts();
 
             return true;
         }

@@ -132,11 +132,13 @@ namespace C868
 
                 if (TimeScreen_TimeID_Text.Text == "")
                 {
-                    Database.AddTime(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
+                    //TODO: Fix db call
+                    //Database.AddTime(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
                 }
                 else
                 {
-                    Database.UpdateTime(TimeID, customerID, type, start, end, MainScreen.User.UserName);
+                    //TODO: Fix db call
+                    //Database.UpdateTime(TimeID, customerID, type, start, end, MainScreen.User.UserName);
                 }
                 Close();
             }

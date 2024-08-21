@@ -29,6 +29,11 @@ namespace C868
             CustomerScreen_Country_Combo.DisplayMember = "Value";
             CustomerScreen_Country_Combo.ValueMember = "Key";
             CustomerScreen_Country_Combo.SelectedItem = null;
+            var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
+            CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
+            CustomerScreen_Organization_Combo.DisplayMember = "Value";
+            CustomerScreen_Organization_Combo.ValueMember = "Key";
+            CustomerScreen_Organization_Combo.SelectedItem = null;
             ActiveControl = CustomerScreen_Name_Text;
         }
 
@@ -37,16 +42,23 @@ namespace C868
             InitializeComponent();
             CustomerScreen_CustomerID_Text.Text = customer.CustomerID.ToString();
             CustomerScreen_Name_Text.Text = customer.CustomerName;
+            CustomerScreen_Email_Text.Text = customer.Email;
             CustomerScreen_Phone_Text.Text = customer.Phone;
             CustomerScreen_StreetAddress_Text.Text = customer.Address;
             CustomerScreen_StreetAddress2_Text.Text = customer.Address2;
             CustomerScreen_City_Text.Text = customer.City;
             CustomerScreen_PostalCode_Text.Text = customer.PostalCode;
+            CustomerScreen_Notes_Text.Text = customer.Notes;
             var countryDictionary = new BindingSource { DataSource = MainScreen.Countries };
             CustomerScreen_Country_Combo.DataSource = countryDictionary;
             CustomerScreen_Country_Combo.DisplayMember = "Value";
             CustomerScreen_Country_Combo.ValueMember = "Key";
             CustomerScreen_Country_Combo.SelectedItem = MainScreen.Countries.Where(x => x.Value.ToLower() == customer.Country.ToLower()).Single();
+            var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
+            CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
+            CustomerScreen_Organization_Combo.DisplayMember = "Value";
+            CustomerScreen_Organization_Combo.ValueMember = "Key";
+            CustomerScreen_Organization_Combo.SelectedItem = MainScreen.OrganizationDictionary.Where(x => Convert.ToInt32(x.Value) == customer.OrganizationID).Single();
             ActiveControl = CustomerScreen_Name_Text;
         }
 
@@ -61,20 +73,25 @@ namespace C868
             {
                 int customerID = -1;
                 string customerName = CustomerScreen_Name_Text.Text?.Trim();
+                string email = CustomerScreen_Email_Text.Text?.Trim();
                 string phone = CustomerScreen_Phone_Text.Text?.Trim();
                 string address1 = CustomerScreen_StreetAddress_Text.Text?.Trim();
                 string address2 = CustomerScreen_StreetAddress2_Text.Text?.Trim();
                 string postalCode = CustomerScreen_PostalCode_Text.Text?.Trim();
                 string city = CustomerScreen_City_Text.Text?.Trim();
+                string notes = CustomerScreen_Notes_Text.Text;
                 int countryID = -1;
+                int organizationID = -1;
                 List<string> message = new List<string>();
 
                 if (customerName == "") { message.Add("Customer Name"); }
+                if (email == "") { message.Add("Email"); }
                 if (phone == "") { message.Add("Phone"); }
                 if (address1 == "") { message.Add("Street Address"); }
                 if (postalCode == "") { message.Add("Postal Code"); }
                 if (city == "") { message.Add("City"); }
                 if (CustomerScreen_Country_Combo.SelectedItem == null) { message.Add("Country"); } else { countryID = Convert.ToInt32(CustomerScreen_Country_Combo.SelectedValue); }
+                if (CustomerScreen_Organization_Combo.SelectedItem == null) { message.Add("Organization"); } else { organizationID = Convert.ToInt32(CustomerScreen_Organization_Combo.SelectedValue); }
 
                 int errorCount = message.Count;
 
@@ -96,6 +113,10 @@ namespace C868
                             if (i != errorCount - 1) { error += $"{message[i]}, "; } else { error += $"and {message[i]} is required."; }
                         }
                     }
+                    if (CustomerScreen_Organization_Combo.Items.Count == 0) 
+                    {
+                        error += "\n\nOrganizations have not been setup yet.\nPlease navigate to Config -> Organizations to setup an Organization."; 
+                    }
                     throw new ApplicationException(error);
                 }
 
@@ -112,14 +133,14 @@ namespace C868
                 if (CustomerScreen_CustomerID_Text.Text == "")
                 {
                     int addressID = Database.AddAddress(address1, address2, cityID, postalCode, phone, MainScreen.User.UserName);
-                    Database.AddCustomer(customerName, addressID, MainScreen.User.UserName);
+                    Database.AddCustomer(customerName, addressID, MainScreen.User.UserName, organizationID, email, notes);
                 }
                 else
                 {
                     customerID = Convert.ToInt32(CustomerScreen_CustomerID_Text.Text);
                     Customer customer = MainScreen.Customers.Where(c => c.CustomerID == customerID).Single();
                     Database.UpdateAddress(customer.AddressID, address1, address2, cityID, postalCode, phone, MainScreen.User.UserName);
-                    Database.UpdateCustomer(customer.CustomerID, customerName, MainScreen.User.UserName);
+                    Database.UpdateCustomer(customer.CustomerID, customerName, MainScreen.User.UserName, organizationID, email, notes);
                 }
                 Close();
             }

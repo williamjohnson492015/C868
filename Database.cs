@@ -325,6 +325,7 @@ namespace C868
                 bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
 
                 MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes, unaffiliatedDefault));
+                MainScreen.OrganizationDictionary.Add(orgID, orgName);
             }
 
             connection.Close();
