@@ -307,8 +307,8 @@ namespace C868
 
         public static void GetOrganizations()
         {
-            string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                "o.unaffiliatedDefault from organization o;";
+            string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes " +
+                "from organization o;";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -323,22 +323,21 @@ namespace C868
                 string contactEmail = dataReader[4].ToString();
                 bool isActive = Convert.ToBoolean(dataReader[5]);
                 string orgNotes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
 
-                MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes, unaffiliatedDefault));
+                MainScreen.Organizations.Add(new Organization(orgID, orgName, contactName, contactPhone, contactEmail, isActive, orgNotes));
                 MainScreen.OrganizationDictionary.Add(orgID, orgName);
             }
 
             connection.Close();
         }
 
-        public static int AddOrganization(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false )
+        public static int AddOrganization(string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null)
         {
             int orgID = -1;
             DateTime now = DateTime.Now;
             string query = "insert into organization " +
-                "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,unaffiliatedDefault,createDate,createdBy,lastUpdate,lastUpdateBy) " +
-                $"values('{orgName}','{contactName}','{contactPhone}','{contactEmail}',{isActive},'{orgNotes}',{isDefault}," +
+                "(organizationName,billingContactName,billingContactPhone,billingContactEmail,active,notes,createDate,createdBy,lastUpdate,lastUpdateBy) " +
+                $"values('{orgName}','{contactName}','{contactPhone}','{contactEmail}',{isActive},'{orgNotes}'," +
                 $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
                 $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}');";
 
@@ -346,8 +345,8 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                "o.unaffiliatedDefault from organization o order by o.organizationId desc limit 1;";
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes " +
+                "from organization o order by o.organizationId desc limit 1;";
 
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -361,9 +360,8 @@ namespace C868
                 string billingContactEmail = dataReader[4].ToString();
                 bool active = Convert.ToBoolean(dataReader[5]);
                 string notes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
 
-                MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault));
+                MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes));
                 MainScreen.OrganizationDictionary.Add(orgID, organizationName);
             }
 
@@ -371,20 +369,20 @@ namespace C868
             return orgID;
         }
 
-        public static void UpdateOrganization(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null, bool isDefault = false)
+        public static void UpdateOrganization(int orgId, string userName, string orgName, string contactName, string contactPhone, string contactEmail, bool isActive, string orgNotes = null)
         {
             DateTime now = DateTime.Now;
             string query = "update organization " +
                 $"set organizationName = '{orgName}', billingContactName = '{contactName}', billingContactPhone = '{contactPhone}', billingContactEmail = '{contactEmail}', " +
-                $"active = {isActive}, notes = '{orgNotes}', unaffiliatedDefault = {isDefault},lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
+                $"active = {isActive}, notes = '{orgNotes}',lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"lastUpdateBy = '{userName}' where organizationId = {orgId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes, " +
-                $"o.unaffiliatedDefault from organization o where o.organizationId = {orgId};";
+            query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes " +
+                $" from organization o where o.organizationId = {orgId};";
 
             cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -398,9 +396,8 @@ namespace C868
                 string billingContactEmail = dataReader[4].ToString();
                 bool active = Convert.ToBoolean(dataReader[5]);
                 string notes = dataReader[6].ToString();
-                bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
 
-                Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault);
+                Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes);
                 IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
                 if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = update; }
                 MainScreen.OrganizationDictionary[orgID] = organizationName;

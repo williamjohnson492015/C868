@@ -21,7 +21,7 @@ namespace C868
         {
             InitializeComponent();
             
-            var organizationGrid = new BindingSource { DataSource = MainScreen.Organizations.OrderBy(x => x.OrganizationName).Where(x => x.UnaffiliatedDefault == false).Select(x => new { x.OrganizationID, x.OrganizationName}).ToList() };
+            var organizationGrid = new BindingSource { DataSource = MainScreen.Organizations.OrderBy(x => x.OrganizationName).Select(x => new { x.OrganizationID, x.OrganizationName}).ToList() };
             OrganizationSearchScreen_OrganizationGridView.DataSource = organizationGrid;
             OrganizationSearchScreen_OrganizationGridView.Columns[0].Visible = false;
         }
@@ -36,7 +36,7 @@ namespace C868
             }
 
             // find the index of the Organization by name
-            matches = MainScreen.Organizations.Where(x => x.OrganizationName.ToLower().Contains(key.ToLower()) && x.UnaffiliatedDefault == false).ToList();
+            matches = MainScreen.Organizations.Where(x => x.OrganizationName.ToLower().Contains(key.ToLower())).ToList();
 
             // handle zero matches and return accordingly
             if (matches.Count() == 0)
@@ -56,7 +56,7 @@ namespace C868
             BindingSource result = new BindingSource();
 
             List<Organization> tempList = OrganizationSearchScreen_LookupOrganizationByName(searchText);
-            result.DataSource = tempList.OrderBy(x => x.OrganizationName).Where(x => x.UnaffiliatedDefault == false).Select(x => new { x.OrganizationID, x.OrganizationName }).ToList();
+            result.DataSource = tempList.OrderBy(x => x.OrganizationName).Select(x => new { x.OrganizationID, x.OrganizationName }).ToList();
 
             OrganizationSearchScreen_OrganizationGridView.DataSource = result.DataSource;
         }

@@ -13,9 +13,8 @@ namespace C868
         public string BillingContactEmail { get; set; }
         public bool Active { get; set; }
         public string Notes { get; set; }
-        public bool UnaffiliatedDefault { get; set; }
 
-        public Organization(int orgId, string orgName, string contactName, string contactPhone, string contactEmail, bool active, string notes = null, bool unaffiliatedDefault = false )
+        public Organization(int orgId, string orgName, string contactName, string contactPhone, string contactEmail, bool active, string notes = null)
         {
             OrganizationID = orgId;
             OrganizationName = orgName;
@@ -24,7 +23,6 @@ namespace C868
             BillingContactEmail = contactEmail;
             Active = active;
             Notes = notes;
-            UnaffiliatedDefault = unaffiliatedDefault;
         }
 
         public void AddAssociatedContract(BillingContract contract)

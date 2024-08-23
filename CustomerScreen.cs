@@ -58,7 +58,7 @@ namespace C868
             CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
             CustomerScreen_Organization_Combo.DisplayMember = "Value";
             CustomerScreen_Organization_Combo.ValueMember = "Key";
-            CustomerScreen_Organization_Combo.SelectedItem = MainScreen.OrganizationDictionary.Where(x => Convert.ToInt32(x.Value) == customer.OrganizationID).Single();
+            CustomerScreen_Organization_Combo.SelectedItem = MainScreen.OrganizationDictionary.Where(x => Convert.ToInt32(x.Key) == customer.OrganizationID).Single();
             ActiveControl = CustomerScreen_Name_Text;
         }
 
