@@ -11,6 +11,7 @@ using Mysqlx.Crud;
 using System.Windows.Forms;
 using System.Net;
 using System.Xml.Linq;
+using System.Collections;
 
 namespace C868
 {
@@ -363,6 +364,7 @@ namespace C868
                 bool unaffiliatedDefault = Convert.ToBoolean(dataReader[7]);
 
                 MainScreen.Organizations.Add(new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault));
+                MainScreen.OrganizationDictionary.Add(orgID, organizationName);
             }
 
             connection.Close();
@@ -401,6 +403,7 @@ namespace C868
                 Organization update = new Organization(orgID, organizationName, billingContactName, billingContactPhone, billingContactEmail, active, notes, unaffiliatedDefault);
                 IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == update.OrganizationID).Select(x => x.Index);
                 if (index != null) { MainScreen.Organizations[index.SingleOrDefault()] = update; }
+                MainScreen.OrganizationDictionary[orgID] = organizationName;
             }
 
             connection.Close();
@@ -414,6 +417,7 @@ namespace C868
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
             MainScreen.Organizations.Remove(MainScreen.Organizations.First(x => x.OrganizationID == orgId));
+            MainScreen.OrganizationDictionary.Remove(orgId);
             connection.Close();
         }
 

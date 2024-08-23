@@ -56,7 +56,7 @@ namespace C868
             // 
             // OrganizationScreen_OrganizationID_Text
             // 
-            this.OrganizationScreen_OrganizationID_Text.Location = new System.Drawing.Point(155, 23);
+            this.OrganizationScreen_OrganizationID_Text.Location = new System.Drawing.Point(168, 23);
             this.OrganizationScreen_OrganizationID_Text.Name = "OrganizationScreen_OrganizationID_Text";
             this.OrganizationScreen_OrganizationID_Text.ReadOnly = true;
             this.OrganizationScreen_OrganizationID_Text.Size = new System.Drawing.Size(85, 22);
@@ -130,7 +130,7 @@ namespace C868
             // OrganizationScreen_Active_Label
             // 
             this.OrganizationScreen_Active_Label.AutoSize = true;
-            this.OrganizationScreen_Active_Label.Location = new System.Drawing.Point(297, 26);
+            this.OrganizationScreen_Active_Label.Location = new System.Drawing.Point(310, 27);
             this.OrganizationScreen_Active_Label.Name = "OrganizationScreen_Active_Label";
             this.OrganizationScreen_Active_Label.Size = new System.Drawing.Size(47, 16);
             this.OrganizationScreen_Active_Label.TabIndex = 14;
@@ -141,7 +141,7 @@ namespace C868
             this.OrganizationScreen_Active_CheckBox.AutoSize = true;
             this.OrganizationScreen_Active_CheckBox.Checked = true;
             this.OrganizationScreen_Active_CheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.OrganizationScreen_Active_CheckBox.Location = new System.Drawing.Point(350, 27);
+            this.OrganizationScreen_Active_CheckBox.Location = new System.Drawing.Point(363, 28);
             this.OrganizationScreen_Active_CheckBox.Name = "OrganizationScreen_Active_CheckBox";
             this.OrganizationScreen_Active_CheckBox.Size = new System.Drawing.Size(18, 17);
             this.OrganizationScreen_Active_CheckBox.TabIndex = 2;
@@ -149,21 +149,21 @@ namespace C868
             // 
             // OrganizationScreen_BillingContactName_Text
             // 
-            this.OrganizationScreen_BillingContactName_Text.Location = new System.Drawing.Point(155, 108);
+            this.OrganizationScreen_BillingContactName_Text.Location = new System.Drawing.Point(168, 108);
             this.OrganizationScreen_BillingContactName_Text.Name = "OrganizationScreen_BillingContactName_Text";
             this.OrganizationScreen_BillingContactName_Text.Size = new System.Drawing.Size(213, 22);
             this.OrganizationScreen_BillingContactName_Text.TabIndex = 4;
             // 
             // OrganizationScreen_BillingContactPhone_Text
             // 
-            this.OrganizationScreen_BillingContactPhone_Text.Location = new System.Drawing.Point(155, 152);
+            this.OrganizationScreen_BillingContactPhone_Text.Location = new System.Drawing.Point(168, 152);
             this.OrganizationScreen_BillingContactPhone_Text.Name = "OrganizationScreen_BillingContactPhone_Text";
             this.OrganizationScreen_BillingContactPhone_Text.Size = new System.Drawing.Size(213, 22);
             this.OrganizationScreen_BillingContactPhone_Text.TabIndex = 5;
             // 
             // OrganizationScreen_BillingContactEmail_Text
             // 
-            this.OrganizationScreen_BillingContactEmail_Text.Location = new System.Drawing.Point(155, 195);
+            this.OrganizationScreen_BillingContactEmail_Text.Location = new System.Drawing.Point(168, 195);
             this.OrganizationScreen_BillingContactEmail_Text.Name = "OrganizationScreen_BillingContactEmail_Text";
             this.OrganizationScreen_BillingContactEmail_Text.Size = new System.Drawing.Size(213, 22);
             this.OrganizationScreen_BillingContactEmail_Text.TabIndex = 6;
@@ -179,7 +179,7 @@ namespace C868
             // 
             // OrganizationScreen_OrganizationName_Text
             // 
-            this.OrganizationScreen_OrganizationName_Text.Location = new System.Drawing.Point(155, 63);
+            this.OrganizationScreen_OrganizationName_Text.Location = new System.Drawing.Point(168, 63);
             this.OrganizationScreen_OrganizationName_Text.Name = "OrganizationScreen_OrganizationName_Text";
             this.OrganizationScreen_OrganizationName_Text.Size = new System.Drawing.Size(213, 22);
             this.OrganizationScreen_OrganizationName_Text.TabIndex = 3;
@@ -215,7 +215,7 @@ namespace C868
             // 
             this.OrganizationScreen_AddBillingContract_Btn.Location = new System.Drawing.Point(47, 418);
             this.OrganizationScreen_AddBillingContract_Btn.Name = "OrganizationScreen_AddBillingContract_Btn";
-            this.OrganizationScreen_AddBillingContract_Btn.Size = new System.Drawing.Size(314, 30);
+            this.OrganizationScreen_AddBillingContract_Btn.Size = new System.Drawing.Size(334, 30);
             this.OrganizationScreen_AddBillingContract_Btn.TabIndex = 8;
             this.OrganizationScreen_AddBillingContract_Btn.Text = "+Add Billing Contract";
             this.OrganizationScreen_AddBillingContract_Btn.UseVisualStyleBackColor = true;
@@ -225,7 +225,7 @@ namespace C868
             // 
             this.OrganizationScreen_EditBillingContract_Btn.Location = new System.Drawing.Point(47, 454);
             this.OrganizationScreen_EditBillingContract_Btn.Name = "OrganizationScreen_EditBillingContract_Btn";
-            this.OrganizationScreen_EditBillingContract_Btn.Size = new System.Drawing.Size(154, 30);
+            this.OrganizationScreen_EditBillingContract_Btn.Size = new System.Drawing.Size(155, 30);
             this.OrganizationScreen_EditBillingContract_Btn.TabIndex = 9;
             this.OrganizationScreen_EditBillingContract_Btn.Text = "Edit Billing Contract";
             this.OrganizationScreen_EditBillingContract_Btn.UseVisualStyleBackColor = true;
@@ -233,9 +233,9 @@ namespace C868
             // 
             // OrganizationScreen_DeleteBillingContract_Btn
             // 
-            this.OrganizationScreen_DeleteBillingContract_Btn.Location = new System.Drawing.Point(207, 454);
+            this.OrganizationScreen_DeleteBillingContract_Btn.Location = new System.Drawing.Point(208, 454);
             this.OrganizationScreen_DeleteBillingContract_Btn.Name = "OrganizationScreen_DeleteBillingContract_Btn";
-            this.OrganizationScreen_DeleteBillingContract_Btn.Size = new System.Drawing.Size(154, 30);
+            this.OrganizationScreen_DeleteBillingContract_Btn.Size = new System.Drawing.Size(173, 30);
             this.OrganizationScreen_DeleteBillingContract_Btn.TabIndex = 10;
             this.OrganizationScreen_DeleteBillingContract_Btn.Text = "Delete Billing Contract";
             this.OrganizationScreen_DeleteBillingContract_Btn.UseVisualStyleBackColor = true;
@@ -245,6 +245,7 @@ namespace C868
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(833, 496);
             this.Controls.Add(this.OrganizationScreen_DeleteBillingContract_Btn);
             this.Controls.Add(this.OrganizationScreen_EditBillingContract_Btn);
