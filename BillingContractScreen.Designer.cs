@@ -54,7 +54,7 @@
             // 
             // BillingContractScreen_BillingContractID_Text
             // 
-            this.BillingContractScreen_BillingContractID_Text.Location = new System.Drawing.Point(129, 23);
+            this.BillingContractScreen_BillingContractID_Text.Location = new System.Drawing.Point(143, 23);
             this.BillingContractScreen_BillingContractID_Text.Name = "BillingContractScreen_BillingContractID_Text";
             this.BillingContractScreen_BillingContractID_Text.ReadOnly = true;
             this.BillingContractScreen_BillingContractID_Text.Size = new System.Drawing.Size(85, 22);
@@ -120,7 +120,7 @@
             // 
             this.BillingContractScreen_Start_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy";
             this.BillingContractScreen_Start_DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.BillingContractScreen_Start_DatePicker.Location = new System.Drawing.Point(129, 320);
+            this.BillingContractScreen_Start_DatePicker.Location = new System.Drawing.Point(143, 320);
             this.BillingContractScreen_Start_DatePicker.Name = "BillingContractScreen_Start_DatePicker";
             this.BillingContractScreen_Start_DatePicker.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_Start_DatePicker.TabIndex = 10;
@@ -129,7 +129,7 @@
             // 
             this.BillingContractScreen_End_DatePicker.CustomFormat = "MM\'/\'dd\'/\'yyyy";
             this.BillingContractScreen_End_DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.BillingContractScreen_End_DatePicker.Location = new System.Drawing.Point(129, 365);
+            this.BillingContractScreen_End_DatePicker.Location = new System.Drawing.Point(143, 365);
             this.BillingContractScreen_End_DatePicker.Name = "BillingContractScreen_End_DatePicker";
             this.BillingContractScreen_End_DatePicker.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_End_DatePicker.TabIndex = 11;
@@ -138,7 +138,7 @@
             // 
             this.BillingContractScreen_HourlyRate_RadioBtn.AutoSize = true;
             this.BillingContractScreen_HourlyRate_RadioBtn.Checked = true;
-            this.BillingContractScreen_HourlyRate_RadioBtn.Location = new System.Drawing.Point(129, 151);
+            this.BillingContractScreen_HourlyRate_RadioBtn.Location = new System.Drawing.Point(143, 151);
             this.BillingContractScreen_HourlyRate_RadioBtn.Name = "BillingContractScreen_HourlyRate_RadioBtn";
             this.BillingContractScreen_HourlyRate_RadioBtn.Size = new System.Drawing.Size(99, 20);
             this.BillingContractScreen_HourlyRate_RadioBtn.TabIndex = 5;
@@ -150,7 +150,7 @@
             // BillingContractScreen_FlatRate_RadioBtn
             // 
             this.BillingContractScreen_FlatRate_RadioBtn.AutoSize = true;
-            this.BillingContractScreen_FlatRate_RadioBtn.Location = new System.Drawing.Point(234, 151);
+            this.BillingContractScreen_FlatRate_RadioBtn.Location = new System.Drawing.Point(248, 151);
             this.BillingContractScreen_FlatRate_RadioBtn.Name = "BillingContractScreen_FlatRate_RadioBtn";
             this.BillingContractScreen_FlatRate_RadioBtn.Size = new System.Drawing.Size(82, 20);
             this.BillingContractScreen_FlatRate_RadioBtn.TabIndex = 6;
@@ -160,7 +160,7 @@
             // 
             // BillingContractScreen_Title_Text
             // 
-            this.BillingContractScreen_Title_Text.Location = new System.Drawing.Point(129, 67);
+            this.BillingContractScreen_Title_Text.Location = new System.Drawing.Point(143, 67);
             this.BillingContractScreen_Title_Text.Name = "BillingContractScreen_Title_Text";
             this.BillingContractScreen_Title_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_Title_Text.TabIndex = 3;
@@ -176,28 +176,28 @@
             // 
             // BillingContractScreen_Reference_Text
             // 
-            this.BillingContractScreen_Reference_Text.Location = new System.Drawing.Point(129, 109);
+            this.BillingContractScreen_Reference_Text.Location = new System.Drawing.Point(143, 109);
             this.BillingContractScreen_Reference_Text.Name = "BillingContractScreen_Reference_Text";
             this.BillingContractScreen_Reference_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_Reference_Text.TabIndex = 4;
             // 
             // BillingContractScreen_HourlyRate_Text
             // 
-            this.BillingContractScreen_HourlyRate_Text.Location = new System.Drawing.Point(129, 192);
+            this.BillingContractScreen_HourlyRate_Text.Location = new System.Drawing.Point(143, 192);
             this.BillingContractScreen_HourlyRate_Text.Name = "BillingContractScreen_HourlyRate_Text";
             this.BillingContractScreen_HourlyRate_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_HourlyRate_Text.TabIndex = 7;
             // 
             // BillingContractScreen_TotalAvailableHours_Text
             // 
-            this.BillingContractScreen_TotalAvailableHours_Text.Location = new System.Drawing.Point(129, 277);
+            this.BillingContractScreen_TotalAvailableHours_Text.Location = new System.Drawing.Point(143, 277);
             this.BillingContractScreen_TotalAvailableHours_Text.Name = "BillingContractScreen_TotalAvailableHours_Text";
             this.BillingContractScreen_TotalAvailableHours_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_TotalAvailableHours_Text.TabIndex = 9;
             // 
             // BillingContractScreen_FlatRate_Text
             // 
-            this.BillingContractScreen_FlatRate_Text.Location = new System.Drawing.Point(129, 235);
+            this.BillingContractScreen_FlatRate_Text.Location = new System.Drawing.Point(143, 235);
             this.BillingContractScreen_FlatRate_Text.Name = "BillingContractScreen_FlatRate_Text";
             this.BillingContractScreen_FlatRate_Text.ReadOnly = true;
             this.BillingContractScreen_FlatRate_Text.Size = new System.Drawing.Size(244, 22);

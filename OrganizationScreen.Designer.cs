@@ -30,6 +30,7 @@ namespace C868
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.OrganizationScreen_OrganizationID_Text = new System.Windows.Forms.TextBox();
             this.OrganizationScreen_Save_Btn = new System.Windows.Forms.Button();
             this.OrganizationScreen_Cancel_Btn = new System.Windows.Forms.Button();
@@ -194,11 +195,26 @@ namespace C868
             // 
             // OrganizationScreen_BillingContractGridView
             // 
+            this.OrganizationScreen_BillingContractGridView.AllowUserToAddRows = false;
+            this.OrganizationScreen_BillingContractGridView.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.OrganizationScreen_BillingContractGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.OrganizationScreen_BillingContractGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.OrganizationScreen_BillingContractGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.OrganizationScreen_BillingContractGridView.EnableHeadersVisualStyles = false;
             this.OrganizationScreen_BillingContractGridView.Location = new System.Drawing.Point(47, 276);
+            this.OrganizationScreen_BillingContractGridView.MultiSelect = false;
             this.OrganizationScreen_BillingContractGridView.Name = "OrganizationScreen_BillingContractGridView";
-            this.OrganizationScreen_BillingContractGridView.RowHeadersWidth = 51;
+            this.OrganizationScreen_BillingContractGridView.RowHeadersVisible = false;
+            this.OrganizationScreen_BillingContractGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.OrganizationScreen_BillingContractGridView.RowTemplate.Height = 24;
+            this.OrganizationScreen_BillingContractGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.OrganizationScreen_BillingContractGridView.Size = new System.Drawing.Size(772, 136);
             this.OrganizationScreen_BillingContractGridView.TabIndex = 21;
             // 

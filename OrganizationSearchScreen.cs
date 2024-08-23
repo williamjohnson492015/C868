@@ -21,7 +21,7 @@ namespace C868
         {
             InitializeComponent();
             
-            var organizationGrid = new BindingSource { DataSource = MainScreen.Organizations.OrderBy(x => x.OrganizationName).Select(x => new { x.OrganizationID, x.OrganizationName}).ToList() };
+            var organizationGrid = new BindingSource { DataSource = MainScreen.Organizations.Select(x => new { x.OrganizationID, x.OrganizationName, x.Active}).OrderBy(x => x.OrganizationName).ToList() };
             OrganizationSearchScreen_OrganizationGridView.DataSource = organizationGrid;
             OrganizationSearchScreen_OrganizationGridView.Columns[0].Visible = false;
         }
@@ -56,7 +56,7 @@ namespace C868
             BindingSource result = new BindingSource();
 
             List<Organization> tempList = OrganizationSearchScreen_LookupOrganizationByName(searchText);
-            result.DataSource = tempList.OrderBy(x => x.OrganizationName).Select(x => new { x.OrganizationID, x.OrganizationName }).ToList();
+            result.DataSource = tempList.Select(x => new { x.OrganizationID, x.OrganizationName, x.Active }).OrderBy(x => x.OrganizationName).ToList();
 
             OrganizationSearchScreen_OrganizationGridView.DataSource = result.DataSource;
         }

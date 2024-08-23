@@ -39,7 +39,6 @@ namespace C868
             this.OrganizationSearchScreen_OrganizationSearch_Label = new System.Windows.Forms.Label();
             this.OrganizationSearchScreen_Cancel_Btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.OrganizationSearchScreen_OrganizationGridView)).BeginInit();
-            MainScreen.Organizations.ListChanged += new ListChangedEventHandler(Organizations_ListChanged);
             this.SuspendLayout();
             // 
             // OrganizationSearchScreen_OrganizationSearch_Text
@@ -74,13 +73,13 @@ namespace C868
             this.OrganizationSearchScreen_OrganizationGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.OrganizationSearchScreen_OrganizationGridView.RowTemplate.Height = 24;
             this.OrganizationSearchScreen_OrganizationGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.OrganizationSearchScreen_OrganizationGridView.Size = new System.Drawing.Size(287, 391);
+            this.OrganizationSearchScreen_OrganizationGridView.Size = new System.Drawing.Size(287, 399);
             this.OrganizationSearchScreen_OrganizationGridView.TabIndex = 12;
             this.OrganizationSearchScreen_OrganizationGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.OrganizationSearchScreen_OrganizationGridView_DataBindingComplete);
             // 
             // OrganizationSearchScreen_AddNewOrganization_Btn
             // 
-            this.OrganizationSearchScreen_AddNewOrganization_Btn.Location = new System.Drawing.Point(25, 441);
+            this.OrganizationSearchScreen_AddNewOrganization_Btn.Location = new System.Drawing.Point(25, 449);
             this.OrganizationSearchScreen_AddNewOrganization_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OrganizationSearchScreen_AddNewOrganization_Btn.Name = "OrganizationSearchScreen_AddNewOrganization_Btn";
             this.OrganizationSearchScreen_AddNewOrganization_Btn.Size = new System.Drawing.Size(287, 30);
@@ -91,7 +90,7 @@ namespace C868
             // 
             // OrganizationSearchScreen_EditOrganization_Btn
             // 
-            this.OrganizationSearchScreen_EditOrganization_Btn.Location = new System.Drawing.Point(25, 475);
+            this.OrganizationSearchScreen_EditOrganization_Btn.Location = new System.Drawing.Point(25, 483);
             this.OrganizationSearchScreen_EditOrganization_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OrganizationSearchScreen_EditOrganization_Btn.Name = "OrganizationSearchScreen_EditOrganization_Btn";
             this.OrganizationSearchScreen_EditOrganization_Btn.Size = new System.Drawing.Size(133, 30);
@@ -102,7 +101,7 @@ namespace C868
             // 
             // OrganizationSearchScreen_DeleteOrganization_Btn
             // 
-            this.OrganizationSearchScreen_DeleteOrganization_Btn.Location = new System.Drawing.Point(164, 475);
+            this.OrganizationSearchScreen_DeleteOrganization_Btn.Location = new System.Drawing.Point(164, 483);
             this.OrganizationSearchScreen_DeleteOrganization_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OrganizationSearchScreen_DeleteOrganization_Btn.Name = "OrganizationSearchScreen_DeleteOrganization_Btn";
             this.OrganizationSearchScreen_DeleteOrganization_Btn.Size = new System.Drawing.Size(148, 30);
@@ -122,7 +121,7 @@ namespace C868
             // 
             // OrganizationSearchScreen_Cancel_Btn
             // 
-            this.OrganizationSearchScreen_Cancel_Btn.Location = new System.Drawing.Point(25, 509);
+            this.OrganizationSearchScreen_Cancel_Btn.Location = new System.Drawing.Point(25, 517);
             this.OrganizationSearchScreen_Cancel_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OrganizationSearchScreen_Cancel_Btn.Name = "OrganizationSearchScreen_Cancel_Btn";
             this.OrganizationSearchScreen_Cancel_Btn.Size = new System.Drawing.Size(287, 30);

@@ -27,8 +27,8 @@ namespace C868
         public OrganizationScreen()
         {
             InitializeComponent();
-            
-            var associationView = new BindingSource() { DataSource = associatedContracts };
+
+            var associationView = new BindingSource() { DataSource = associatedContracts.Select(x => new { x.BillingContractID, x.Title, x.Reference, x.Start, x.End, x.Type, x.HourlyRate, x.FlatRate, x.TotalAvailableHours}).ToList() };
             OrganizationScreen_BillingContractGridView.DataSource = associationView;
 
             ActiveControl = OrganizationScreen_OrganizationName_Text;
@@ -47,7 +47,7 @@ namespace C868
             OrganizationScreen_Notes_Text.Text = org.Notes;
 
             associatedContracts = org.AssociatedContracts;
-            var associationView = new BindingSource() { DataSource = associatedContracts };
+            var associationView = new BindingSource() { DataSource = associatedContracts.Select(x => new { x.BillingContractID, x.Title, x.Reference, x.Start, x.End, x.Type, x.HourlyRate, x.FlatRate, x.TotalAvailableHours }).ToList() };
             OrganizationScreen_BillingContractGridView.DataSource = associationView;
 
             ActiveControl = OrganizationScreen_OrganizationName_Text;

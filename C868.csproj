@@ -164,6 +164,9 @@
     <EmbeddedResource Include="CustomerScreen.resx">
       <DependentUpon>CustomerScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LoginScreen.resx">
+      <DependentUpon>LoginScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OrganizationSearchScreen.resx">
       <DependentUpon>OrganizationSearchScreen.cs</DependentUpon>
     </EmbeddedResource>

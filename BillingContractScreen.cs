@@ -63,7 +63,7 @@ namespace C868
                 int contractID = -(OrganizationScreen.associatedContracts.Count());
                 if (BillingContractScreen_BillingContractID_Text.Text != "") { contractID = Convert.ToInt32(BillingContractScreen_BillingContractID_Text.Text); }
                 string title = "";
-                string reference = "";
+                string reference = BillingContractScreen_Reference_Text.Text;
                 string type = "";
                 if (BillingContractScreen_HourlyRate_RadioBtn.Checked == true) { type = "Hourly"; }
                 if (BillingContractScreen_FlatRate_RadioBtn.Checked == true) { type = "Flat"; }
@@ -75,7 +75,6 @@ namespace C868
                 string notes = BillingContractScreen_Notes_Text.Text;
                 List<string> message = new List<string>();
                 if (BillingContractScreen_Title_Text.Text == "") { message.Add("Title"); } else { title = BillingContractScreen_Title_Text.Text; }
-                if (BillingContractScreen_Reference_Text.Text == "") { message.Add("Reference"); } else { reference = BillingContractScreen_Reference_Text.Text; }
                 if (type == "Hourly" && hourlyRate == 0) { message.Add("Hourly Rate"); }
                 if (type == "Flat" && flatRate == 0) { message.Add("Flat Rate"); }
                 if (start == null) { message.Add("Start"); }
@@ -127,8 +126,7 @@ namespace C868
                                 
                 if (BillingContractScreen_BillingContractID_Text.Text == "")
                 {
-                    BillingContract contract = new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes);
-                    OrganizationScreen.associatedContracts.Add(contract);
+                    OrganizationScreen.associatedContracts.Add(new BillingContract(contractID, title, orgID, start, end, type, hourlyRate, flatRate, totalAvailableHours, reference, notes));
                 }
                 else
                 {

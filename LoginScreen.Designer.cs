@@ -72,6 +72,7 @@
             // 
             this.LoginScreen_Password_Text.Location = new System.Drawing.Point(173, 163);
             this.LoginScreen_Password_Text.Name = "LoginScreen_Password_Text";
+            this.LoginScreen_Password_Text.PasswordChar = '*';
             this.LoginScreen_Password_Text.Size = new System.Drawing.Size(210, 22);
             this.LoginScreen_Password_Text.TabIndex = 3;
             this.LoginScreen_Password_Text.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginScreen_Password_Text_KeyDown);
