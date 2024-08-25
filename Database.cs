@@ -624,8 +624,8 @@ namespace C868
                 $"'{startDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{endDate.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
                 $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
-                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}')," +
-                $"'{billingNotes}',{flat},'{billingType}';";
+                $"'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}'," +
+                $"'{billingNotes}',{flat},'{billingType}');";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
@@ -716,8 +716,11 @@ namespace C868
                 IEnumerable<int> index = MainScreen.Organizations.Select((o, i) => new { Organization = o, Index = i }).Where(x => x.Organization.OrganizationID == orgId).Select(x => x.Index);
                 if (index != null) { MainScreen.Organizations[index.SingleOrDefault()].RemoveAssociatedContract(contractId); }
             }
+            connection.Close();
 
             query = $"delete from billing_contract where billingContractId = {contractId};";
+
+            connection.Open();
             cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();            
 

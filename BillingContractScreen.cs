@@ -60,7 +60,7 @@ namespace C868
         {
             try
             {
-                int contractID = -(OrganizationScreen.associatedContracts.Count());
+                int contractID = -(OrganizationScreen.associatedContracts.Count()+1);
                 if (BillingContractScreen_BillingContractID_Text.Text != "") { contractID = Convert.ToInt32(BillingContractScreen_BillingContractID_Text.Text); }
                 string title = "";
                 string reference = BillingContractScreen_Reference_Text.Text;
@@ -152,7 +152,9 @@ namespace C868
             {
                 BillingContractScreen_FlatRate_Text.Clear();
                 BillingContractScreen_FlatRate_Text.ReadOnly = true;
+                BillingContractScreen_FlatRate_Text.TabStop = false;
                 BillingContractScreen_HourlyRate_Text.ReadOnly = false;
+                BillingContractScreen_HourlyRate_Text.TabStop = true;
             }
         }
 
@@ -162,7 +164,9 @@ namespace C868
             {
                 BillingContractScreen_HourlyRate_Text.Clear();
                 BillingContractScreen_HourlyRate_Text.ReadOnly = true;
+                BillingContractScreen_HourlyRate_Text.TabStop = false;
                 BillingContractScreen_FlatRate_Text.ReadOnly = false;
+                BillingContractScreen_FlatRate_Text.TabStop = true;
             }
         }
     }

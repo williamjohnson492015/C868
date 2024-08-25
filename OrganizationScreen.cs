@@ -28,7 +28,7 @@ namespace C868
         {
             InitializeComponent();
 
-            var associationView = new BindingSource() { DataSource = associatedContracts.Select(x => new { x.BillingContractID, x.Title, x.Reference, x.Start, x.End, x.Type, x.HourlyRate, x.FlatRate, x.TotalAvailableHours}).ToList() };
+            var associationView = new BindingSource() { DataSource = associatedContracts };
             OrganizationScreen_BillingContractGridView.DataSource = associationView;
 
             ActiveControl = OrganizationScreen_OrganizationName_Text;
@@ -47,7 +47,7 @@ namespace C868
             OrganizationScreen_Notes_Text.Text = org.Notes;
 
             associatedContracts = org.AssociatedContracts;
-            var associationView = new BindingSource() { DataSource = associatedContracts.Select(x => new { x.BillingContractID, x.Title, x.Reference, x.Start, x.End, x.Type, x.HourlyRate, x.FlatRate, x.TotalAvailableHours }).ToList() };
+            var associationView = new BindingSource() { DataSource = associatedContracts };
             OrganizationScreen_BillingContractGridView.DataSource = associationView;
 
             ActiveControl = OrganizationScreen_OrganizationName_Text;
@@ -55,6 +55,10 @@ namespace C868
 
         private void OrganizationScreen_Cancel_Btn_Click(object sender, EventArgs e)
         {
+            foreach(BillingContract contract in associatedContracts)
+            {
+                if (contract.BillingContractID < 0) { associatedContracts.Remove(contract); }
+            }
             Close();
         }
 
@@ -150,7 +154,9 @@ namespace C868
             {
                 if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
                 {
-                    new BillingContractScreen((BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem).ShowDialog();
+                    int contractID = (int)OrganizationScreen_BillingContractGridView.CurrentRow.Cells[0].Value;
+                    BillingContract contract = associatedContracts.Where(x => x.BillingContractID == contractID).SingleOrDefault();
+                    new BillingContractScreen(contract).ShowDialog();
                     OrganizationScreen_BillingContractGridView.ClearSelection();
                 }
                 else
@@ -171,7 +177,8 @@ namespace C868
             {
                 if (OrganizationScreen_BillingContractGridView.SelectedRows.Count > 0)
                 {
-                    BillingContract contract = (BillingContract)OrganizationScreen_BillingContractGridView.CurrentRow.DataBoundItem;
+                    int contractID = (int)OrganizationScreen_BillingContractGridView.CurrentRow.Cells[0].Value;
+                    BillingContract contract = associatedContracts.Where(x => x.BillingContractID == contractID).SingleOrDefault();
                     if (Database.CheckBillingContractHasAssociatedTime(contract.BillingContractID)) { throw new ApplicationException("This Billing Contract has Time associated to it and cannot be deleted."); }
 
                     DialogResult answer = MessageBox.Show("Are you sure you want to hard delete this?", "Confirm Delete", MessageBoxButtons.YesNo);
@@ -204,6 +211,11 @@ namespace C868
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        private void OrganizationScreen_BillingContractGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            OrganizationScreen_BillingContractGridView.ClearSelection();
         }
     }
 }

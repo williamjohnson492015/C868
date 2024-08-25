@@ -28,9 +28,18 @@ namespace C868
             TimeScreen_Type_Combo.SelectedItem = null;
             var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
             TimeScreen_Customer_Combo.DataSource = customerDictionary;
-            TimeScreen_Customer_Combo.DisplayMember = "Value";
-            TimeScreen_Customer_Combo.ValueMember = "Key";
-            TimeScreen_Customer_Combo.SelectedItem = null;
+            if (MainScreen.Customers.Count == 0) 
+            { 
+                TimeScreen_Customer_Combo.Enabled = false;
+                TimeScreen_Customer_Combo.SelectedItem = null;
+            } 
+            else 
+            { 
+                TimeScreen_Customer_Combo.Enabled = true;
+                TimeScreen_Customer_Combo.DisplayMember = "Value";
+                TimeScreen_Customer_Combo.ValueMember = "Key";
+                TimeScreen_Customer_Combo.SelectedItem = null;
+            }
             DateTime localNow = DateTime.Now.ToLocalTime();
             TimeScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
             TimeScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
@@ -45,9 +54,18 @@ namespace C868
             TimeScreen_Type_Combo.SelectedItem = Time.Type;
             var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
             TimeScreen_Customer_Combo.DataSource = customerDictionary;
-            TimeScreen_Customer_Combo.DisplayMember = "Value";
-            TimeScreen_Customer_Combo.ValueMember = "Key";
-            TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
+            if (MainScreen.Customers.Count == 0)
+            {
+                TimeScreen_Customer_Combo.Enabled = false;
+                TimeScreen_Customer_Combo.SelectedItem = null;
+            }
+            else
+            {
+                TimeScreen_Customer_Combo.Enabled = true;
+                TimeScreen_Customer_Combo.DisplayMember = "Value";
+                TimeScreen_Customer_Combo.ValueMember = "Key";
+                TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
+            }            
             TimeScreen_Start_DatePicker.Value = Time.Start;
             TimeScreen_End_DatePicker.Value = Time.End;
             ActiveControl = TimeScreen_Type_Combo;

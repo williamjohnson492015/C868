@@ -202,6 +202,7 @@
             this.BillingContractScreen_FlatRate_Text.ReadOnly = true;
             this.BillingContractScreen_FlatRate_Text.Size = new System.Drawing.Size(244, 22);
             this.BillingContractScreen_FlatRate_Text.TabIndex = 8;
+            this.BillingContractScreen_FlatRate_Text.TabStop = false;
             // 
             // BillingContractScreen_HourlyRate_Label
             // 
