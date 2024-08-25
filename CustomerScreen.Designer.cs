@@ -60,13 +60,14 @@
             this.CustomerScreen_CustomerID_Text.ReadOnly = true;
             this.CustomerScreen_CustomerID_Text.Size = new System.Drawing.Size(85, 22);
             this.CustomerScreen_CustomerID_Text.TabIndex = 2;
+            this.CustomerScreen_CustomerID_Text.TabStop = false;
             // 
             // CustomerScreen_Save_Btn
             // 
             this.CustomerScreen_Save_Btn.Location = new System.Drawing.Point(542, 427);
             this.CustomerScreen_Save_Btn.Name = "CustomerScreen_Save_Btn";
             this.CustomerScreen_Save_Btn.Size = new System.Drawing.Size(118, 30);
-            this.CustomerScreen_Save_Btn.TabIndex = 10;
+            this.CustomerScreen_Save_Btn.TabIndex = 13;
             this.CustomerScreen_Save_Btn.Text = "Save";
             this.CustomerScreen_Save_Btn.UseVisualStyleBackColor = true;
             this.CustomerScreen_Save_Btn.Click += new System.EventHandler(this.CustomerScreen_Save_Btn_Click);
@@ -76,7 +77,7 @@
             this.CustomerScreen_Cancel_Btn.Location = new System.Drawing.Point(666, 427);
             this.CustomerScreen_Cancel_Btn.Name = "CustomerScreen_Cancel_Btn";
             this.CustomerScreen_Cancel_Btn.Size = new System.Drawing.Size(118, 30);
-            this.CustomerScreen_Cancel_Btn.TabIndex = 11;
+            this.CustomerScreen_Cancel_Btn.TabIndex = 14;
             this.CustomerScreen_Cancel_Btn.Text = "Cancel";
             this.CustomerScreen_Cancel_Btn.UseVisualStyleBackColor = true;
             this.CustomerScreen_Cancel_Btn.Click += new System.EventHandler(this.CustomerScreen_Cancel_Btn_Click);
@@ -95,28 +96,28 @@
             this.CustomerScreen_PostalCode_Text.Location = new System.Drawing.Point(129, 300);
             this.CustomerScreen_PostalCode_Text.Name = "CustomerScreen_PostalCode_Text";
             this.CustomerScreen_PostalCode_Text.Size = new System.Drawing.Size(142, 22);
-            this.CustomerScreen_PostalCode_Text.TabIndex = 8;
+            this.CustomerScreen_PostalCode_Text.TabIndex = 9;
             // 
             // CustomerScreen_City_Text
             // 
             this.CustomerScreen_City_Text.Location = new System.Drawing.Point(129, 261);
             this.CustomerScreen_City_Text.Name = "CustomerScreen_City_Text";
             this.CustomerScreen_City_Text.Size = new System.Drawing.Size(142, 22);
-            this.CustomerScreen_City_Text.TabIndex = 7;
+            this.CustomerScreen_City_Text.TabIndex = 8;
             // 
             // CustomerScreen_StreetAddress_Text
             // 
             this.CustomerScreen_StreetAddress_Text.Location = new System.Drawing.Point(129, 182);
             this.CustomerScreen_StreetAddress_Text.Name = "CustomerScreen_StreetAddress_Text";
             this.CustomerScreen_StreetAddress_Text.Size = new System.Drawing.Size(213, 22);
-            this.CustomerScreen_StreetAddress_Text.TabIndex = 5;
+            this.CustomerScreen_StreetAddress_Text.TabIndex = 6;
             // 
             // CustomerScreen_Phone_Text
             // 
             this.CustomerScreen_Phone_Text.Location = new System.Drawing.Point(129, 140);
             this.CustomerScreen_Phone_Text.Name = "CustomerScreen_Phone_Text";
             this.CustomerScreen_Phone_Text.Size = new System.Drawing.Size(142, 22);
-            this.CustomerScreen_Phone_Text.TabIndex = 4;
+            this.CustomerScreen_Phone_Text.TabIndex = 5;
             // 
             // CustomerScreen_Name_Text
             // 
@@ -184,7 +185,7 @@
             this.CustomerScreen_StreetAddress2_Text.Location = new System.Drawing.Point(129, 221);
             this.CustomerScreen_StreetAddress2_Text.Name = "CustomerScreen_StreetAddress2_Text";
             this.CustomerScreen_StreetAddress2_Text.Size = new System.Drawing.Size(213, 22);
-            this.CustomerScreen_StreetAddress2_Text.TabIndex = 6;
+            this.CustomerScreen_StreetAddress2_Text.TabIndex = 7;
             // 
             // CustomerScreen_Country_Combo
             // 
@@ -193,7 +194,7 @@
             this.CustomerScreen_Country_Combo.Location = new System.Drawing.Point(129, 339);
             this.CustomerScreen_Country_Combo.Name = "CustomerScreen_Country_Combo";
             this.CustomerScreen_Country_Combo.Size = new System.Drawing.Size(142, 24);
-            this.CustomerScreen_Country_Combo.TabIndex = 9;
+            this.CustomerScreen_Country_Combo.TabIndex = 10;
             // 
             // CustomerScreen_Notes_Text
             // 
@@ -201,7 +202,7 @@
             this.CustomerScreen_Notes_Text.Multiline = true;
             this.CustomerScreen_Notes_Text.Name = "CustomerScreen_Notes_Text";
             this.CustomerScreen_Notes_Text.Size = new System.Drawing.Size(385, 378);
-            this.CustomerScreen_Notes_Text.TabIndex = 23;
+            this.CustomerScreen_Notes_Text.TabIndex = 12;
             // 
             // CustomerScreen_Notes_Label
             // 
@@ -209,7 +210,7 @@
             this.CustomerScreen_Notes_Label.Location = new System.Drawing.Point(345, 26);
             this.CustomerScreen_Notes_Label.Name = "CustomerScreen_Notes_Label";
             this.CustomerScreen_Notes_Label.Size = new System.Drawing.Size(46, 16);
-            this.CustomerScreen_Notes_Label.TabIndex = 25;
+            this.CustomerScreen_Notes_Label.TabIndex = 28;
             this.CustomerScreen_Notes_Label.Text = "Notes:";
             // 
             // CustomerScreen_Email_Text
@@ -217,7 +218,7 @@
             this.CustomerScreen_Email_Text.Location = new System.Drawing.Point(129, 101);
             this.CustomerScreen_Email_Text.Name = "CustomerScreen_Email_Text";
             this.CustomerScreen_Email_Text.Size = new System.Drawing.Size(213, 22);
-            this.CustomerScreen_Email_Text.TabIndex = 22;
+            this.CustomerScreen_Email_Text.TabIndex = 4;
             // 
             // CustomerScreen_Email_Label
             // 
@@ -235,7 +236,7 @@
             this.CustomerScreen_Organization_Combo.Location = new System.Drawing.Point(129, 382);
             this.CustomerScreen_Organization_Combo.Name = "CustomerScreen_Organization_Combo";
             this.CustomerScreen_Organization_Combo.Size = new System.Drawing.Size(213, 24);
-            this.CustomerScreen_Organization_Combo.TabIndex = 26;
+            this.CustomerScreen_Organization_Combo.TabIndex = 11;
             // 
             // CustomerScreen_Organization_Label
             // 

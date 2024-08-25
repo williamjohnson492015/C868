@@ -26,16 +26,18 @@ namespace C868
             InitializeComponent();
             TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
             TimeScreen_Type_Combo.SelectedItem = null;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            TimeScreen_Customer_Combo.DataSource = customerDictionary;
-            if (MainScreen.Customers.Count == 0) 
-            { 
-                TimeScreen_Customer_Combo.Enabled = false;
-                TimeScreen_Customer_Combo.SelectedItem = null;
-            } 
-            else 
-            { 
-                TimeScreen_Customer_Combo.Enabled = true;
+            if (MainScreen.Organizations.Count > 0)
+            {
+                var organizationDictionary = new BindingSource { DataSource = MainScreen.Organizations.ToDictionary(x => x.OrganizationID, x => x.OrganizationName) };
+                TimeScreen_Organization_Combo.DataSource = organizationDictionary;
+                TimeScreen_Organization_Combo.DisplayMember = "Value";
+                TimeScreen_Organization_Combo.ValueMember = "Key";
+                TimeScreen_Organization_Combo.SelectedItem = null;
+            }
+            if (MainScreen.Customers.Count > 0) 
+            {
+                var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
+                TimeScreen_Customer_Combo.DataSource = customerDictionary;
                 TimeScreen_Customer_Combo.DisplayMember = "Value";
                 TimeScreen_Customer_Combo.ValueMember = "Key";
                 TimeScreen_Customer_Combo.SelectedItem = null;
@@ -52,20 +54,22 @@ namespace C868
             TimeScreen_TimeID_Text.Text = Time.TimeID.ToString();
             TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
             TimeScreen_Type_Combo.SelectedItem = Time.Type;
-            var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-            TimeScreen_Customer_Combo.DataSource = customerDictionary;
-            if (MainScreen.Customers.Count == 0)
+            if (MainScreen.Organizations.Count > 0)
             {
-                TimeScreen_Customer_Combo.Enabled = false;
-                TimeScreen_Customer_Combo.SelectedItem = null;
+                var organizationDictionary = new BindingSource { DataSource = MainScreen.Organizations.ToDictionary(x => x.OrganizationID, x => x.OrganizationName) };
+                TimeScreen_Organization_Combo.DataSource = organizationDictionary;
+                TimeScreen_Organization_Combo.DisplayMember = "Value";
+                TimeScreen_Organization_Combo.ValueMember = "Key";
+                TimeScreen_Organization_Combo.SelectedItem = null; //add org name
             }
-            else
+            if (MainScreen.Customers.Count > 0)
             {
-                TimeScreen_Customer_Combo.Enabled = true;
+                var customerDictionary = new BindingSource { DataSource = MainScreen.Customers.ToDictionary(x => x.CustomerID, x => x.CustomerName) };
+                TimeScreen_Customer_Combo.DataSource = customerDictionary;
                 TimeScreen_Customer_Combo.DisplayMember = "Value";
                 TimeScreen_Customer_Combo.ValueMember = "Key";
                 TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
-            }            
+            }
             TimeScreen_Start_DatePicker.Value = Time.Start;
             TimeScreen_End_DatePicker.Value = Time.End;
             ActiveControl = TimeScreen_Type_Combo;
@@ -168,6 +172,66 @@ namespace C868
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        private void TimeScreen_Customer_Combo_Refresh()
+        {
+            int orgID = -1;
+            if (TimeScreen_Organization_Combo.SelectedText != "") { orgID = Convert.ToInt32(TimeScreen_Organization_Combo.SelectedValue); }
+            var refresh = new BindingSource();
+
+            if (orgID != -1)
+            {
+                refresh = new BindingSource
+                {
+                    DataSource = MainScreen.Customers
+                    .Where(x => x.OrganizationID == orgID)
+                    .ToDictionary(x => x.CustomerID, x => x.CustomerName)
+                };
+                TimeScreen_Customer_Combo.DataSource = refresh.DataSource;
+                TimeScreen_Customer_Combo.SelectedItem = null;
+            }
+        }
+
+        private void TimeScreen_BillingContract_Combo_Refresh()
+        {
+            int orgID = -1;
+            if (TimeScreen_Organization_Combo.SelectedText != "") { orgID = Convert.ToInt32(TimeScreen_Organization_Combo.SelectedValue); }
+            DateTime startKey = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
+            DateTime endKey = Convert.ToDateTime(TimeScreen_End_DatePicker.Value);
+            var refresh = new BindingSource();
+            
+            if (orgID != -1) 
+            {
+                refresh = new BindingSource { 
+                    DataSource = MainScreen.BillingContracts
+                    .Where(x => (x.OrganizationID == orgID) && (x.Start >= startKey) && (x.End <= endKey))
+                    .ToDictionary(x => x.BillingContractID, x => x.Title) 
+                };
+            }
+            if (refresh.Count != 0)
+            {
+                TimeScreen_ChargeTo_Combo.DataSource = refresh.DataSource;
+                TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
+                TimeScreen_ChargeTo_Combo.ValueMember = "Key";
+                TimeScreen_ChargeTo_Combo.SelectedItem = null;
+            }
+        }
+
+        private void TimeScreen_Organization_Combo_SelectedValueChanged(object sender, EventArgs e)
+        {
+            TimeScreen_Customer_Combo_Refresh();
+            TimeScreen_BillingContract_Combo_Refresh();
+        }
+
+        private void TimeScreen_Start_DatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            TimeScreen_BillingContract_Combo_Refresh();
+        }
+
+        private void TimeScreen_End_DatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            TimeScreen_BillingContract_Combo_Refresh();
         }
     }
 }

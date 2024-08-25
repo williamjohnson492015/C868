@@ -9,6 +9,7 @@ namespace C868
     public class Time
     {
         public int TimeID { get; set; }
+        public int OrganizationID { get; set; }
         public int CustomerID { get; set; }
         public string CustomerName { get; set; }
         public int UserID { get; set; }
@@ -21,9 +22,10 @@ namespace C868
         public bool Billable { get; set; }
         public string Notes { get; set; }
 
-        public Time(int timeId, int customerId, string customerName, int userId, string userName, string type, DateTime start, DateTime end, int contractId, decimal totalHours, bool billable, string notes = null)
+        public Time(int timeId, int organizationId, int customerId, string customerName, int userId, string userName, string type, DateTime start, DateTime end, int contractId, decimal totalHours, bool billable, string notes = null)
         {
             TimeID = timeId;
+            OrganizationID = organizationId;
             CustomerID = customerId;
             CustomerName = customerName;
             UserName = userName;
@@ -35,7 +37,6 @@ namespace C868
             TotalHours = totalHours;
             Billable = billable;
             Notes = notes;
-
         }
     }
 }
