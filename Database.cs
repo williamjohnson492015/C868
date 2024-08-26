@@ -222,13 +222,13 @@ namespace C868
             DateTime now = DateTime.Now;
             string query = "insert into customer (customerName,addressId,active,createDate,createdBy,lastUpdate,lastUpdateBy,organizationId,email,notes) " +
                 $"values('{customerName}',{addressId},1,'{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}'," +
-                $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}','{orgId}','{email}','{notes}');";
+                $"'{userName}','{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}','{userName}',{orgId},'{email}','{notes}');";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId " +
+            query = "select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId, " +
                 "c.organizationId, c.email, c.notes from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId " +
                 "left join country co on ci.countryId = co.countryId order by c.customerId desc limit 1;";
             cmd = new MySqlCommand(query, connection);
@@ -259,13 +259,13 @@ namespace C868
         {
             DateTime now = DateTime.Now;
             string query = $"update customer set customerName = '{customerName}', lastUpdate = '{now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss", DateTimeFormatInfo.InvariantInfo)}', " +
-                $"lastUpdateBy = '{userName}', organizationId = '{orgId}', email = '{email}', notes = '{notes}' where customerId = {customerId};";
+                $"lastUpdateBy = '{userName}', organizationId = {orgId}, email = '{email}', notes = '{notes}' where customerId = {customerId};";
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(query, connection);
             cmd.ExecuteNonQuery();
 
-            query = $"select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId " +
+            query = $"select c.customerId, c.customerName, a.phone, a.address, a.address2, ci.city, a.postalCode, co.country, c.addressId, " +
                 $"c.organizationId, c.email, c.notes from customer c left join address a on c.addressId = a.addressId left join city ci on a.cityId = ci.cityId " +
                 $"left join country co on ci.countryId = co.countryId where c.customerId = {customerId};";
             cmd = new MySqlCommand(query, connection);
