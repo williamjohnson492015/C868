@@ -123,6 +123,7 @@
             this.TimeScreen_Type_Combo.Name = "TimeScreen_Type_Combo";
             this.TimeScreen_Type_Combo.Size = new System.Drawing.Size(213, 24);
             this.TimeScreen_Type_Combo.TabIndex = 1;
+            this.TimeScreen_Type_Combo.SelectedIndexChanged += new System.EventHandler(this.TimeScreen_Type_Combo_SelectedValueChanged);
             // 
             // TimeScreen_Type_Label
             // 

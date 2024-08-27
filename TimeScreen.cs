@@ -43,14 +43,6 @@ namespace C868
                 TimeScreen_Customer_Combo.ValueMember = "Key";
                 TimeScreen_Customer_Combo.SelectedItem = null;
             }
-            if (MainScreen.BillingContracts.Count > 0)
-            {
-                var contractDictionary = new BindingSource { DataSource = MainScreen.BillingContracts.ToDictionary(x => x.BillingContractID, x => x.Title) };
-                TimeScreen_ChargeTo_Combo.DataSource = contractDictionary;
-                TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
-                TimeScreen_ChargeTo_Combo.ValueMember = "Key";
-                TimeScreen_ChargeTo_Combo.SelectedItem = null;
-            }
             DateTime localNow = DateTime.Now.ToLocalTime();
             TimeScreen_Start_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 9, 0, 0);
             TimeScreen_End_DatePicker.Value = new DateTime(localNow.Year, localNow.Month, localNow.Day, 17, 0, 0);
@@ -61,6 +53,7 @@ namespace C868
         public TimeScreen(Time Time)
         {
             InitializeComponent();
+            var orgName = MainScreen.Organizations.Where(x => x.OrganizationID == Time.OrganizationID).Select(x => x.OrganizationName).Single();
             TimeScreen_TimeID_Text.Text = Time.TimeID.ToString();
             TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
             TimeScreen_Type_Combo.SelectedItem = Time.Type;
@@ -70,7 +63,7 @@ namespace C868
                 TimeScreen_Organization_Combo.DataSource = organizationDictionary;
                 TimeScreen_Organization_Combo.DisplayMember = "Value";
                 TimeScreen_Organization_Combo.ValueMember = "Key";
-                TimeScreen_Organization_Combo.SelectedItem = null; //add org name
+                TimeScreen_Organization_Combo.SelectedItem = orgName;
             }
             if (MainScreen.Customers.Count > 0)
             {
@@ -79,14 +72,6 @@ namespace C868
                 TimeScreen_Customer_Combo.DisplayMember = "Value";
                 TimeScreen_Customer_Combo.ValueMember = "Key";
                 TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
-            }
-            if (MainScreen.BillingContracts.Count > 0)
-            {
-                var contractDictionary = new BindingSource { DataSource = MainScreen.BillingContracts.ToDictionary(x => x.BillingContractID, x => x.Title) };
-                TimeScreen_ChargeTo_Combo.DataSource = contractDictionary;
-                TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
-                TimeScreen_ChargeTo_Combo.ValueMember = "Key";
-                TimeScreen_ChargeTo_Combo.SelectedItem = null;
             }
             TimeScreen_Start_DatePicker.Value = Time.Start;
             TimeScreen_End_DatePicker.Value = Time.End;
@@ -106,6 +91,7 @@ namespace C868
                 int TimeID = -1;
                 if (TimeScreen_TimeID_Text.Text != "") { TimeID = Convert.ToInt32(TimeScreen_TimeID_Text.Text); }
                 string type = "";
+                int organizationID = -1;
                 int customerID = -1;
                 DateTime localNow = DateTime.Now.ToLocalTime();
                 TimeZoneInfo local = TimeZoneInfo.Local;
@@ -115,11 +101,17 @@ namespace C868
                 TimeSpan businessHoursEnd = new DateTime(estNow.Year, estNow.Month, estNow.Day, 17, 0, 0).TimeOfDay;
                 DateTime start = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
                 DateTime end = Convert.ToDateTime(TimeScreen_End_DatePicker.Value);
+                int contractID = -1;
+                decimal totalHours = (decimal)(start - end).TotalHours;
+                bool isBillable = TimeScreen_Billable_CheckBox.Checked;
+                string notes = TimeScreen_Notes_Text.Text;
                 List<string> message = new List<string>();
                 if (TimeScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = TimeScreen_Type_Combo.Text.ToString(); }
-                if (TimeScreen_Customer_Combo.SelectedItem == null) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
+                if (TimeScreen_Organization_Combo.SelectedItem == null && isBillable == false) { message.Add("Organization"); } else { organizationID = Convert.ToInt32(TimeScreen_Organization_Combo.SelectedValue); }
+                if (TimeScreen_Customer_Combo.SelectedItem == null && isBillable == false) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
                 if (start == null) { message.Add("Start"); }
                 if (end == null) { message.Add("End"); }
+                if (TimeScreen_ChargeTo_Combo.SelectedItem == null && isBillable == false) { message.Add("Charge To"); } else { contractID = Convert.ToInt32(TimeScreen_ChargeTo_Combo.SelectedValue); }
 
                 int errorCount = message.Count;
 
@@ -173,13 +165,11 @@ namespace C868
 
                 if (TimeScreen_TimeID_Text.Text == "")
                 {
-                    //TODO: Fix db call
-                    //Database.AddTime(customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName);
+                    Database.AddTime(organizationID, customerID, MainScreen.User.UserID, type, start, end, MainScreen.User.UserName, contractID, totalHours, isBillable, notes);
                 }
                 else
                 {
-                    //TODO: Fix db call
-                    //Database.UpdateTime(TimeID, customerID, type, start, end, MainScreen.User.UserName);
+                    Database.UpdateTime(TimeID, organizationID, customerID, type, start, end, MainScreen.User.UserName, contractID, totalHours, isBillable, notes);
                 }
                 Close();
             }
@@ -197,10 +187,20 @@ namespace C868
         {
             if (formLoadComplete) 
             { 
-                int orgID = Int32.TryParse(TimeScreen_Organization_Combo.SelectedValue.ToString(), out int result) ? result : -1;
-                var refresh = new BindingSource { DataSource = MainScreen.Customers.Where(x => x.OrganizationID == orgID).ToDictionary(x => x.CustomerID, x => x.CustomerName) };
-                TimeScreen_Customer_Combo.DataSource = refresh;
-                TimeScreen_Customer_Combo.SelectedItem = null;
+                int orgID = int.TryParse(TimeScreen_Organization_Combo.SelectedValue.ToString(), out int result) ? result : -1;
+                var refresh = new BindingSource();
+                if (MainScreen.Customers.Where(x => x.OrganizationID == orgID).Any())
+                {
+                    refresh = new BindingSource { DataSource = MainScreen.Customers.Where(x => x.OrganizationID == orgID).ToDictionary(x => x.CustomerID, x => x.CustomerName) };
+                    TimeScreen_Customer_Combo.DataSource = refresh;
+                    TimeScreen_Customer_Combo.DisplayMember = "Value";
+                    TimeScreen_Customer_Combo.ValueMember = "Key";
+                    TimeScreen_Customer_Combo.SelectedItem = null;
+                }
+                else
+                {
+                    TimeScreen_Customer_Combo.DataSource = refresh;
+                }
             }
         }
 
@@ -208,26 +208,41 @@ namespace C868
         {
             if (formLoadComplete)
             {
-                int orgID = Int32.TryParse(TimeScreen_Organization_Combo.SelectedValue.ToString(), out int result) ? result : -1;
+                int orgID = int.TryParse(TimeScreen_Organization_Combo.SelectedValue.ToString(), out int result) ? result : -1;
                 DateTime startKey = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
                 DateTime endKey = Convert.ToDateTime(TimeScreen_End_DatePicker.Value);
                 var refresh = new BindingSource();
 
                 if (orgID != -1 && startKey != null && endKey != null)
                 {
-                    refresh = new BindingSource
+                    if (MainScreen.BillingContracts.Where(x => (x.OrganizationID == orgID) && (x.Start <= startKey) && (x.End >= endKey)).Any())
+                    { 
+                        refresh = new BindingSource
+                        {
+                            DataSource = MainScreen.BillingContracts.Where(x => (x.OrganizationID == orgID) && (x.Start <= startKey) && (x.End >= endKey)).ToDictionary(x => x.BillingContractID, x => x.Title)
+                        };
+                        TimeScreen_ChargeTo_Combo.DataSource = refresh;
+                        TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
+                        TimeScreen_ChargeTo_Combo.ValueMember = "Key";
+                        TimeScreen_ChargeTo_Combo.SelectedItem = null;
+                    }
+                    else
                     {
-                        DataSource = MainScreen.BillingContracts
-                        .Where(x => x.OrganizationID == orgID)
-                        //.Where(x => x.Start >= startKey) 
-                        //.Where(x => x.End <= endKey)
-                        .ToDictionary(x => x.BillingContractID, x => x.Title)
-                    };
-                    TimeScreen_ChargeTo_Combo.DataSource = refresh;
-                    //TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
-                    //TimeScreen_ChargeTo_Combo.ValueMember = "Key";
-                    TimeScreen_ChargeTo_Combo.SelectedItem = null;
+                        TimeScreen_ChargeTo_Combo.DataSource = refresh;
+                    }
                 }
+            }
+        }
+
+        private void TimeScreen_Type_Combo_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (Array.Exists(MainScreen.NonBillableTypes, x => x == TimeScreen_Type_Combo.Text.ToString()) && TimeScreen_Billable_CheckBox.Checked == true) 
+            {
+                TimeScreen_Billable_CheckBox.Checked = false;
+            }
+            if (!Array.Exists(MainScreen.NonBillableTypes, x => x == TimeScreen_Type_Combo.Text.ToString()) && TimeScreen_Billable_CheckBox.Checked == false)
+            {
+                TimeScreen_Billable_CheckBox.Checked = true;
             }
         }
 

@@ -22,6 +22,7 @@ namespace C868
         public static BindingList<Organization> Organizations = new BindingList<Organization>();
         public static BindingList<BillingContract> BillingContracts = new BindingList<BillingContract>();
         public static Array TimeTypes = new[] { "Work", "Meeting", "Scrum", "Presentation", "Admin", "Lunch" };
+        public static string[] NonBillableTypes = new string[] { "Admin", "Lunch" };
         public static List<City> Cities = new List<City>();
         public static Dictionary<int, string> Countries = new Dictionary<int, string>();
         public static Dictionary<int, string> OrganizationDictionary = new Dictionary<int, string>();
