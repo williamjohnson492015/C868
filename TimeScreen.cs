@@ -114,19 +114,15 @@ namespace C868
                 if (TimeScreen_Customer_Combo.SelectedItem == null && isBillable) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
                 if (start == null) { message.Add("Start"); }
                 if (end == null) { message.Add("End"); }
-                if (TimeScreen_ChargeTo_Combo.SelectedItem == null && isBillable) { message.Add("Charge To"); } 
+                if (TimeScreen_ChargeTo_Combo.SelectedItem == null) 
+                { 
+                    if (isBillable) { message.Add("Charge To"); } 
+                } 
                 else 
                 {
-                    if (TimeScreen_ChargeTo_Combo.SelectedItem == null & isBillable == false)
-                    {
-                        //do nothing; clean this up
-                    }
-                    else
-                    {
-                        contractID = Convert.ToInt32(TimeScreen_ChargeTo_Combo.SelectedValue);
-                        totalHoursConfiguredOnContract = MainScreen.BillingContracts.Where(x => x.BillingContractID == contractID).Select(x => x.TotalAvailableHours).Single();
-                        totalHoursAppliedToContract = Database.GetTotalBillableHoursByContractId(contractID);
-                    }
+                    contractID = Convert.ToInt32(TimeScreen_ChargeTo_Combo.SelectedValue);
+                    totalHoursConfiguredOnContract = MainScreen.BillingContracts.Where(x => x.BillingContractID == contractID).Select(x => x.TotalAvailableHours).SingleOrDefault();
+                    totalHoursAppliedToContract = Database.GetTotalBillableHoursByContractId(contractID);
                 }
 
                 int errorCount = message.Count;

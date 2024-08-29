@@ -24,6 +24,8 @@ namespace C868
             if (reportId == 1) { this.Text = "Appointment Types By Month"; reportGrid = ReportScreen_AppointmentTypesByMonth_Report(); }
             if (reportId == 2) { this.Text = "Schedules By Customer"; reportGrid = ReportScreen_SchedulesByCustomer_Report(); }
             if (reportId == 3) { this.Text = "Schedules By User"; reportGrid = ReportScreen_SchedulesByUser_Report(); }
+            if (reportId == 4) { this.Text = "Total Billable Hours By Month"; reportGrid = ReportScreen_TotalBillableHoursByMonth_Report(); }
+            if (reportId == 5) { this.Text = "Total Billable Hours By Contract"; reportGrid = ReportScreen_TotalBillableHoursByBillingContract_Report(); }
             ReportScreen_ReportGridView.DataSource = reportGrid;
         }
 
@@ -46,6 +48,16 @@ namespace C868
         }
 
         private BindingSource ReportScreen_SchedulesByUser_Report()
+        {
+            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
+            return results;
+        }
+        private BindingSource ReportScreen_TotalBillableHoursByMonth_Report()
+        {
+            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
+            return results;
+        }
+        private BindingSource ReportScreen_TotalBillableHoursByBillingContract_Report()
         {
             var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
             return results;
