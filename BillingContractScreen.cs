@@ -91,13 +91,13 @@ namespace C868
                     }
                     else if (errorCount == 2)
                     {
-                        error += $"{message[0]} and {message[1]} is required.";
+                        error += $"{message[0]} and {message[1]} are required.";
                     }
                     else
                     {
                         for (int i = 0; i < errorCount; i++)
                         {
-                            if (i != errorCount - 1) { error += $"{message[i]}, "; } else { error += $"and {message[i]} is required."; }
+                            if (i != errorCount - 1) { error += $"{message[i]}, "; } else { error += $"and {message[i]} are required."; }
                         }
                     }
                     throw new ApplicationException(error);

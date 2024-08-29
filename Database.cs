@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.Xml.Linq;
 using System.Collections;
+using System.Diagnostics.Contracts;
 
 namespace C868
 {
@@ -556,6 +557,23 @@ namespace C868
             }
             connection.Close();
             return timeCount > 0;
+        }
+
+        public static Decimal GetTotalBillableHoursByContractId(int contractId)
+        {
+            decimal totalHours = 0;
+            string query = $"select coalesce(sum(t.totalHours),0) from time t where t.BillingContractId = {contractId} and t.billable = 1";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                totalHours = Convert.ToDecimal(dataReader[0]);
+            }
+            connection.Close();
+            return totalHours;
         }
 
         public static BillingContract GetBillingContract(int contractId)

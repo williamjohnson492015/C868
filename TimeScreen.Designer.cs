@@ -190,6 +190,7 @@
             this.TimeScreen_Billable_CheckBox.Size = new System.Drawing.Size(18, 17);
             this.TimeScreen_Billable_CheckBox.TabIndex = 7;
             this.TimeScreen_Billable_CheckBox.UseVisualStyleBackColor = true;
+            this.TimeScreen_Billable_CheckBox.CheckedChanged += new System.EventHandler(this.TimeScreen_Billable_CheckBox_CheckedChanged);
             // 
             // TimeScreen_Billable_Label
             // 

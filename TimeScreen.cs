@@ -89,7 +89,8 @@ namespace C868
             try
             {
                 int TimeID = -1;
-                if (TimeScreen_TimeID_Text.Text != "") { TimeID = Convert.ToInt32(TimeScreen_TimeID_Text.Text); }
+                decimal tempTotalHours = 0;
+                if (TimeScreen_TimeID_Text.Text != "") { TimeID = Convert.ToInt32(TimeScreen_TimeID_Text.Text); tempTotalHours = MainScreen.Times.Where(x => x.TimeID == TimeID).Select(x => x.TotalHours).Single(); }
                 string type = "";
                 int organizationID = -1;
                 int customerID = -1;
@@ -102,16 +103,31 @@ namespace C868
                 DateTime start = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
                 DateTime end = Convert.ToDateTime(TimeScreen_End_DatePicker.Value);
                 int contractID = -1;
-                decimal totalHours = (decimal)(start - end).TotalHours;
+                decimal totalHours = (decimal)(end - start).TotalHours;
                 bool isBillable = TimeScreen_Billable_CheckBox.Checked;
                 string notes = TimeScreen_Notes_Text.Text;
+                decimal totalHoursConfiguredOnContract = -1;
+                decimal totalHoursAppliedToContract = -1;
                 List<string> message = new List<string>();
                 if (TimeScreen_Type_Combo.SelectedItem == null) { message.Add("Type"); } else { type = TimeScreen_Type_Combo.Text.ToString(); }
-                if (TimeScreen_Organization_Combo.SelectedItem == null && isBillable == false) { message.Add("Organization"); } else { organizationID = Convert.ToInt32(TimeScreen_Organization_Combo.SelectedValue); }
-                if (TimeScreen_Customer_Combo.SelectedItem == null && isBillable == false) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
+                if (TimeScreen_Organization_Combo.SelectedItem == null && isBillable) { message.Add("Organization"); } else { organizationID = Convert.ToInt32(TimeScreen_Organization_Combo.SelectedValue); }
+                if (TimeScreen_Customer_Combo.SelectedItem == null && isBillable) { message.Add("Customer"); } else { customerID = Convert.ToInt32(TimeScreen_Customer_Combo.SelectedValue); }
                 if (start == null) { message.Add("Start"); }
                 if (end == null) { message.Add("End"); }
-                if (TimeScreen_ChargeTo_Combo.SelectedItem == null && isBillable == false) { message.Add("Charge To"); } else { contractID = Convert.ToInt32(TimeScreen_ChargeTo_Combo.SelectedValue); }
+                if (TimeScreen_ChargeTo_Combo.SelectedItem == null && isBillable) { message.Add("Charge To"); } 
+                else 
+                {
+                    if (TimeScreen_ChargeTo_Combo.SelectedItem == null & isBillable == false)
+                    {
+                        //do nothing; clean this up
+                    }
+                    else
+                    {
+                        contractID = Convert.ToInt32(TimeScreen_ChargeTo_Combo.SelectedValue);
+                        totalHoursConfiguredOnContract = MainScreen.BillingContracts.Where(x => x.BillingContractID == contractID).Select(x => x.TotalAvailableHours).Single();
+                        totalHoursAppliedToContract = Database.GetTotalBillableHoursByContractId(contractID);
+                    }
+                }
 
                 int errorCount = message.Count;
 
@@ -124,13 +140,13 @@ namespace C868
                     }
                     else if (errorCount == 2)
                     {
-                        error += $"{message[0]} and {message[1]} is required.";
+                        error += $"{message[0]} and {message[1]} are required.";
                     }
                     else
                     {
                         for (int i = 0; i < errorCount; i++)
                         {
-                            if (i != errorCount - 1) { error += $"{message[i]}, "; } else { error += $"and {message[i]} is required."; }
+                            if (i != errorCount - 1) { error += $"{message[i]}, "; } else { error += $"and {message[i]} are required."; }
                         }
                     }
                     throw new ApplicationException(error);
@@ -158,9 +174,18 @@ namespace C868
                     {
                         if (TimeID != Time.TimeID)
                         {
-                            throw new ApplicationException($"Time overlaps with another Time.\n\nCustomer: {Time.CustomerName}\nTime Start: {Time.Start}\nTime End: {Time.End}");
+                            throw new ApplicationException($"Time overlaps with another time.\n\nCustomer: {Time.CustomerName}\nTime Start: {Time.Start}\nTime End: {Time.End}");
                         }
                     }
+                }
+
+                if(isBillable && totalHoursConfiguredOnContract > 0 && (totalHours + totalHoursAppliedToContract - tempTotalHours) > totalHoursConfiguredOnContract)
+                {
+                    string warning = "Saving this time will cause the billable hours to go over the total available hours configured for this billing contract." 
+                        + "\n\nAre you sure you would like to proceed?\n\nTotal Hours Configured: " + totalHoursConfiguredOnContract + "\nTotal Hours Applied: " + totalHoursAppliedToContract
+                        + "\nTotal Hours To Be Applied: " + (totalHours + totalHoursAppliedToContract);
+                    DialogResult result = MessageBox.Show(warning, "Warning", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.No) { return; }
                 }
 
                 if (TimeScreen_TimeID_Text.Text == "")
@@ -206,7 +231,7 @@ namespace C868
 
         private void TimeScreen_BillingContract_Combo_Refresh()
         {
-            if (formLoadComplete)
+            if (formLoadComplete && TimeScreen_Organization_Combo.SelectedItem != null)
             {
                 int orgID = int.TryParse(TimeScreen_Organization_Combo.SelectedValue.ToString(), out int result) ? result : -1;
                 DateTime startKey = Convert.ToDateTime(TimeScreen_Start_DatePicker.Value);
@@ -258,6 +283,11 @@ namespace C868
         }
 
         private void TimeScreen_End_DatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            TimeScreen_BillingContract_Combo_Refresh();
+        }
+
+        private void TimeScreen_Billable_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             TimeScreen_BillingContract_Combo_Refresh();
         }
