@@ -54,13 +54,71 @@ namespace C868
         }
         private BindingSource ReportScreen_TotalBillableHoursByMonth_Report()
         {
-            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
+            var query = (from t in MainScreen.Times
+                         join o in MainScreen.Organizations on t.OrganizationID equals o.OrganizationID into org
+                         from oResult in org.DefaultIfEmpty()
+                         join bc in MainScreen.BillingContracts on t.BillingContractID equals bc.BillingContractID into contract
+                         from bcResult in contract.DefaultIfEmpty()
+                         where t.Billable == true
+                         select new
+                         {
+                             OrganizationName = oResult?.OrganizationName ?? string.Empty,
+                             HourlyRate = bcResult?.HourlyRate ?? 0,
+                             t.Start,
+                             t.TotalHours
+                         })
+                .GroupBy(groups => new { groups.OrganizationName, Month = groups.Start.ToString("MMM"), groups.Start.Year, groups.HourlyRate })
+                .Select(group => new 
+                    { 
+                        group.Key.OrganizationName, 
+                        MonthYear = string.Format("{0} {1}", group.Key.Month, group.Key.Year),
+                        TotalBillableHours = group.Sum(s => s.TotalHours),
+                        TotalRevenue = (group.Sum(s => s.TotalHours) * group.Key.HourlyRate).ToString("C")
+                }
+                )
+                .OrderBy(o => o.OrganizationName)
+                .ThenByDescending(o => o.MonthYear)
+                .ToList();
+            var results = new BindingSource { DataSource = query };
             return results;
         }
         private BindingSource ReportScreen_TotalBillableHoursByBillingContract_Report()
         {
-            var results = new BindingSource { DataSource = MainScreen.Times.GroupBy(groups => new { groups.UserName, groups.Start, groups.End }).Select(group => group.Key).OrderBy(o => o.UserName).ThenByDescending(o => o.Start).ToList() };
+            var query = (from t in MainScreen.Times
+                         join o in MainScreen.Organizations on t.OrganizationID equals o.OrganizationID into org
+                         from oResult in org.DefaultIfEmpty()
+                         join bc in MainScreen.BillingContracts on t.BillingContractID equals bc.BillingContractID into contract
+                         from bcResult in contract.DefaultIfEmpty()
+                         where t.Billable == true
+                         select new
+                         {
+                             OrganizationName = oResult?.OrganizationName ?? string.Empty,
+                             Title = bcResult?.Title ?? string.Empty,
+                             HourlyRate = bcResult?.HourlyRate ?? 0,
+                             StartDate = bcResult?.Start ?? default,
+                             EndDate = bcResult?.End ?? default,
+                             t.TotalHours
+                         })
+                         .GroupBy(groups => new { groups.OrganizationName, Contract = groups.Title, StartDate = groups.StartDate.ToShortDateString(), EndDate = groups.EndDate.ToShortDateString(), groups.HourlyRate })
+                         .Select(group => new
+                         {
+                             group.Key.OrganizationName,
+                             group.Key.Contract,
+                             group.Key.StartDate,
+                             group.Key.EndDate,
+                             TotalBillableHours = group.Sum(s => s.TotalHours),
+                             TotalRevenue = (group.Sum(s => s.TotalHours) * group.Key.HourlyRate).ToString("C")
+                         })
+                         .OrderBy(o => o.OrganizationName)
+                         .ThenByDescending(o => o.StartDate)
+                         .ToList();
+            var results = new BindingSource { DataSource = query };
             return results;
+        }
+
+        private void ReportScreen_ReportGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            ReportScreen_ReportGridView.ClearSelection();
         }
     }
 }

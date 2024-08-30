@@ -173,6 +173,9 @@
     <EmbeddedResource Include="OrganizationScreen.resx">
       <DependentUpon>OrganizationScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReportScreen.resx">
+      <DependentUpon>ReportScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimeScreen.resx">
       <DependentUpon>TimeScreen.cs</DependentUpon>
     </EmbeddedResource>

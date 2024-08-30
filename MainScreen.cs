@@ -331,5 +331,15 @@ namespace C868
         {
             new OrganizationSearchScreen().ShowDialog();
         }
+
+        private void MainScreen_TotalBillableHoursByMonth_MenuItem_Click(object sender, EventArgs e)
+        {
+            new ReportScreen(4).ShowDialog();
+        }
+
+        private void MainScreen_TotalBillableHoursByContract_MenuItem_Click(object sender, EventArgs e)
+        {
+            new ReportScreen(5).ShowDialog();
+        }
     }
 }

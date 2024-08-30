@@ -61,6 +61,7 @@
             this.ReportScreen_ReportGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.ReportScreen_ReportGridView.Size = new System.Drawing.Size(853, 503);
             this.ReportScreen_ReportGridView.TabIndex = 12;
+            this.ReportScreen_ReportGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.ReportScreen_ReportGridView_DataBindingComplete);
             // 
             // menuStrip1
             // 

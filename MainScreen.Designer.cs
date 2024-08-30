@@ -53,10 +53,10 @@ namespace C868
             this.MainScreen_DatePicker = new System.Windows.Forms.DateTimePicker();
             this.MainScreen_CustomerSearch_Label = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MainScreen_TotalBillableHoursByContract_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_CustomerGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_TimeGridView)).BeginInit();
-            MainScreen.Customers.ListChanged += new ListChangedEventHandler(Customers_ListChanged);
-            MainScreen.Times.ListChanged += new ListChangedEventHandler(Times_ListChanged);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -217,7 +217,9 @@ namespace C868
             this.MainScreen_Reports_MenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MainScreen_TimeTypesByMonth_MenuItem,
             this.MainScreen_SchedulesByCustomer_MenuItem,
-            this.MainScreen_SchedulesByUser_MenuItem});
+            this.MainScreen_SchedulesByUser_MenuItem,
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem,
+            this.MainScreen_TotalBillableHoursByContract_MenuItem});
             this.MainScreen_Reports_MenuItem.Name = "MainScreen_Reports_MenuItem";
             this.MainScreen_Reports_MenuItem.Size = new System.Drawing.Size(74, 24);
             this.MainScreen_Reports_MenuItem.Text = "Reports";
@@ -225,21 +227,21 @@ namespace C868
             // MainScreen_TimeTypesByMonth_MenuItem
             // 
             this.MainScreen_TimeTypesByMonth_MenuItem.Name = "MainScreen_TimeTypesByMonth_MenuItem";
-            this.MainScreen_TimeTypesByMonth_MenuItem.Size = new System.Drawing.Size(245, 26);
+            this.MainScreen_TimeTypesByMonth_MenuItem.Size = new System.Drawing.Size(302, 26);
             this.MainScreen_TimeTypesByMonth_MenuItem.Text = "Time Types by Month";
             this.MainScreen_TimeTypesByMonth_MenuItem.Click += new System.EventHandler(this.MainScreen_TimeTypesByMonth_MenuItem_Click);
             // 
             // MainScreen_SchedulesByCustomer_MenuItem
             // 
             this.MainScreen_SchedulesByCustomer_MenuItem.Name = "MainScreen_SchedulesByCustomer_MenuItem";
-            this.MainScreen_SchedulesByCustomer_MenuItem.Size = new System.Drawing.Size(245, 26);
+            this.MainScreen_SchedulesByCustomer_MenuItem.Size = new System.Drawing.Size(302, 26);
             this.MainScreen_SchedulesByCustomer_MenuItem.Text = "Schedules by Customer";
             this.MainScreen_SchedulesByCustomer_MenuItem.Click += new System.EventHandler(this.MainScreen_SchedulesByCustomer_MenuItem_Click);
             // 
             // MainScreen_SchedulesByUser_MenuItem
             // 
             this.MainScreen_SchedulesByUser_MenuItem.Name = "MainScreen_SchedulesByUser_MenuItem";
-            this.MainScreen_SchedulesByUser_MenuItem.Size = new System.Drawing.Size(245, 26);
+            this.MainScreen_SchedulesByUser_MenuItem.Size = new System.Drawing.Size(302, 26);
             this.MainScreen_SchedulesByUser_MenuItem.Text = "Schedules by User";
             this.MainScreen_SchedulesByUser_MenuItem.Click += new System.EventHandler(this.MainScreen_SchedulesByUser_MenuItem_Click);
             // 
@@ -254,7 +256,7 @@ namespace C868
             // MainScreen_Organizations_MenuItem
             // 
             this.MainScreen_Organizations_MenuItem.Name = "MainScreen_Organizations_MenuItem";
-            this.MainScreen_Organizations_MenuItem.Size = new System.Drawing.Size(224, 26);
+            this.MainScreen_Organizations_MenuItem.Size = new System.Drawing.Size(184, 26);
             this.MainScreen_Organizations_MenuItem.Text = "Organizations";
             this.MainScreen_Organizations_MenuItem.Click += new System.EventHandler(this.MainScreen_Organizations_MenuItem_Click);
             // 
@@ -293,6 +295,20 @@ namespace C868
             this.label1.Size = new System.Drawing.Size(192, 37);
             this.label1.TabIndex = 25;
             this.label1.Text = "SCHEDULE IT";
+            // 
+            // MainScreen_TotalBillableHoursByMonth_MenuItem
+            // 
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem.Name = "MainScreen_TotalBillableHoursByMonth_MenuItem";
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem.Size = new System.Drawing.Size(302, 26);
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem.Text = "Total Billable Hours by Month";
+            this.MainScreen_TotalBillableHoursByMonth_MenuItem.Click += new System.EventHandler(this.MainScreen_TotalBillableHoursByMonth_MenuItem_Click);
+            // 
+            // MainScreen_TotalBillableHoursByContract_MenuItem
+            // 
+            this.MainScreen_TotalBillableHoursByContract_MenuItem.Name = "MainScreen_TotalBillableHoursByContract_MenuItem";
+            this.MainScreen_TotalBillableHoursByContract_MenuItem.Size = new System.Drawing.Size(302, 26);
+            this.MainScreen_TotalBillableHoursByContract_MenuItem.Text = "Total Billable Hours by Contract";
+            this.MainScreen_TotalBillableHoursByContract_MenuItem.Click += new System.EventHandler(this.MainScreen_TotalBillableHoursByContract_MenuItem_Click);
             // 
             // MainScreen
             // 
@@ -349,6 +365,8 @@ namespace C868
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_Exit_MenuItem;
         private System.Windows.Forms.ToolStripMenuItem MainScreen_Organizations_MenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MainScreen_TotalBillableHoursByMonth_MenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MainScreen_TotalBillableHoursByContract_MenuItem;
     }
 }
 

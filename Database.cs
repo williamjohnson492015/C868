@@ -18,13 +18,9 @@ namespace C868
 {
     class Database
     {
-        private static readonly string server = "127.0.0.1";
-        private static readonly string port = "3306";
-        private static readonly string user = "sqlUser";
-        private static readonly string password = "Passw0rd!";
-        private static readonly string database = "client_schedule"; //update to schedule_it once you're ready 
-
-        private static readonly string connString = string.Format("server={0}; port={1}; username={2}; password={3}; database={4}", server, port, user, password, database);
+        private static readonly string database = ConfigurationManager.AppSettings["db"]; //update to schedule_it once you're ready 
+        private static readonly ConnectionStringSettings config = ConfigurationManager.ConnectionStrings["db"];
+        private static readonly string connString = config.ConnectionString; 
         public static MySqlConnection connection = new MySqlConnection(connString);
 
         public static bool CheckInstall()
