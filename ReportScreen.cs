@@ -59,7 +59,7 @@ namespace C868
                          from oResult in org.DefaultIfEmpty()
                          join bc in MainScreen.BillingContracts on t.BillingContractID equals bc.BillingContractID into contract
                          from bcResult in contract.DefaultIfEmpty()
-                         where t.Billable == true
+                         where t.Billable == true && oResult.Active == true
                          select new
                          {
                              OrganizationName = oResult?.OrganizationName ?? string.Empty,
@@ -89,7 +89,7 @@ namespace C868
                          from oResult in org.DefaultIfEmpty()
                          join bc in MainScreen.BillingContracts on t.BillingContractID equals bc.BillingContractID into contract
                          from bcResult in contract.DefaultIfEmpty()
-                         where t.Billable == true
+                         where t.Billable == true && oResult.Active == true
                          select new
                          {
                              OrganizationName = oResult?.OrganizationName ?? string.Empty,
