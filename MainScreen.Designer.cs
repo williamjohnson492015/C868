@@ -57,6 +57,8 @@ namespace C868
             this.MainScreen_TotalBillableHoursByContract_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_CustomerGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainScreen_TimeGridView)).BeginInit();
+            MainScreen.Customers.ListChanged += new ListChangedEventHandler(Customers_ListChanged);
+            MainScreen.Times.ListChanged += new ListChangedEventHandler(Times_ListChanged);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
