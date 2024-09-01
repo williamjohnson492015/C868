@@ -90,11 +90,17 @@ namespace C868
                     int OrganizationID = (int)OrganizationSearchScreen_OrganizationGridView.CurrentRow.Cells[0].Value;
                     Organization Organization = MainScreen.Organizations.Where(x => x.OrganizationID == OrganizationID).Select(x => x).ToList().Single();
 
-                    //TODO: Check if customers are affiliated with it and validate accordingly. You should be archiving or removing all references.
                     DialogResult answer = MessageBox.Show("Are you sure you want to delete this Organization?", "Confirm Delete", MessageBoxButtons.YesNo);
                     if (answer == DialogResult.Yes)
                     {
-                        Database.RemoveOrganization(Organization.OrganizationID);
+                        if (Database.CheckOrganizationHasAssociatedBillingContract(OrganizationID))
+                        {
+                            throw new ApplicationException("This Organization has a Billing Contract associated to it and cannot be deleted.");
+                        }
+                        else
+                        {
+                            Database.RemoveOrganization(Organization.OrganizationID);
+                        }
                     }
                     else
                     {
@@ -105,6 +111,10 @@ namespace C868
                 {
                     return;
                 }
+            }
+            catch(ApplicationException err)
+            {
+                MessageBox.Show(err.Message, "Validation", MessageBoxButtons.OK);
             }
             catch (Exception err)
             {

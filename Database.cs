@@ -302,6 +302,23 @@ namespace C868
             connection.Close();
         }
 
+        public static bool CheckOrganizationHasAssociatedBillingContract(int orgId)
+        {
+            int contractCount = 0;
+            string query = $"select count(*) from billing_contract bc where bc.organizationId = {orgId}";
+
+            connection.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                contractCount = Convert.ToInt32(dataReader[0]);
+            }
+            connection.Close();
+            return contractCount > 0;
+        }
+
         public static void GetOrganizations()
         {
             string query = "select o.organizationId, o.organizationName, o.billingContactName, o.billingContactPhone, o.billingContactEmail, o.active, o.notes " +
