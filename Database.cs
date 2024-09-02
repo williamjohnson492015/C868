@@ -18,18 +18,19 @@ namespace C868
 {
     class Database
     {
-        private static readonly string database = ConfigurationManager.AppSettings["db"]; //update to schedule_it once you're ready 
-        private static readonly ConnectionStringSettings config = ConfigurationManager.ConnectionStrings["db"];
-        private static readonly string connString = config.ConnectionString; 
-        public static MySqlConnection connection = new MySqlConnection(connString);
+        private static readonly string database = ConfigurationManager.AppSettings["db"]; 
+        private static readonly string checkDBConnectionString = ConfigurationManager.ConnectionStrings["checkdb"].ConnectionString;
+        private static readonly string mainConnectionString = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+        public static MySqlConnection connectionCheck = new MySqlConnection(checkDBConnectionString);
+        public static MySqlConnection connection = new MySqlConnection(mainConnectionString);
 
         public static bool CheckInstall()
         {
             bool dbExists = false;
             string query = $"select schema_name from information_schema.schemata where schema_name = '{database}'";
 
-            connection.Open();
-            MySqlCommand cmd = new MySqlCommand(query, connection);
+            connectionCheck.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connectionCheck);
             MySqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -38,7 +39,7 @@ namespace C868
                 dbExists = schemaName.Count() > 0;
             }
 
-            connection.Close();
+            connectionCheck.Close();
 
             return dbExists;
         }
@@ -771,13 +772,85 @@ namespace C868
 
         public static void SetupDB()
         {
-            //add schema dump create script into this query when we're done with everything. Last step.
-            string query = "";
+            string query = "CREATE DATABASE  IF NOT EXISTS `schedule_it` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;" +
+                "\r\nUSE `schedule_it`;\r\n\r\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" +
+                "\r\n/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\r\n/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" +
+                "\r\n/*!50503 SET NAMES utf8 */;\r\n/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;\r\n/*!40103 SET TIME_ZONE='+00:00' */;" +
+                "\r\n/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;\r\n/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;" +
+                "\r\n/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;\r\n/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\r\n\r\n--" +
+                "\r\n-- Table structure for table `address`\r\n--\r\n\r\nDROP TABLE IF EXISTS `address`;\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;" +
+                "\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `address` (\r\n  `addressId` int NOT NULL AUTO_INCREMENT,\r\n  `address` varchar(50) NOT NULL," +
+                "\r\n  `address2` varchar(50) NOT NULL,\r\n  `cityId` int NOT NULL,\r\n  `postalCode` varchar(10) NOT NULL,\r\n  `phone` varchar(20) NOT NULL," +
+                "\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL," +
+                "\r\n  PRIMARY KEY (`addressId`),\r\n  KEY `cityId` (`cityId`),\r\n  CONSTRAINT `address_ibfk_1` FOREIGN KEY (`cityId`) REFERENCES `city` (`cityId`)" +
+                "\r\n) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n/*!40101 SET character_set_client = @saved_cs_client */;" +
+                "\r\n\r\n--\r\n-- Table structure for table `billing_contract`\r\n--\r\n\r\nDROP TABLE IF EXISTS `billing_contract`;" +
+                "\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `billing_contract` (" +
+                "\r\n  `billingContractId` int NOT NULL AUTO_INCREMENT,\r\n  `title` varchar(50) NOT NULL,\r\n  `reference` varchar(50) NOT NULL," +
+                "\r\n  `organizationId` int NOT NULL,\r\n  `hourlyRate` decimal(10,0) DEFAULT NULL,\r\n  `totalAvailableHours` decimal(10,0) DEFAULT NULL," +
+                "\r\n  `start` datetime NOT NULL,\r\n  `end` datetime NOT NULL,\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL,\r\n  `notes` text," +
+                "\r\n  `flatRate` decimal(10,0) DEFAULT NULL,\r\n  `type` varchar(40) NOT NULL,\r\n  PRIMARY KEY (`billingContractId`)," +
+                "\r\n  KEY `organizationId` (`organizationId`),\r\n  CONSTRAINT `organization_ibfk_1` FOREIGN KEY (`organizationId`) REFERENCES `organization` (`organizationId`)" +
+                "\r\n) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n/*!40101 SET character_set_client = @saved_cs_client */;" +
+                "\r\n\r\n--\r\n-- Table structure for table `city`\r\n--\r\n\r\nDROP TABLE IF EXISTS `city`;\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;" +
+                "\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `city` (\r\n  `cityId` int NOT NULL AUTO_INCREMENT,\r\n  `city` varchar(50) NOT NULL," +
+                "\r\n  `countryId` int NOT NULL,\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL," +
+                "\r\n  PRIMARY KEY (`cityId`),\r\n  KEY `countryId` (`countryId`),\r\n  CONSTRAINT `city_ibfk_1` FOREIGN KEY (`countryId`) REFERENCES `country` (`countryId`)" +
+                "\r\n) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n/*!40101 SET character_set_client = @saved_cs_client */;" +
+                "\r\n\r\n--\r\n-- Table structure for table `country`\r\n--\r\n\r\nDROP TABLE IF EXISTS `country`;\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;" +
+                "\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `country` (\r\n  `countryId` int NOT NULL AUTO_INCREMENT,\r\n  `country` varchar(50) NOT NULL," +
+                "\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL," +
+                "\r\n  PRIMARY KEY (`countryId`)\r\n) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;" +
+                "\r\n/*!40101 SET character_set_client = @saved_cs_client */;\r\n\r\n--\r\n-- Dumping data for table `country`\r\n--\r\n\r\nLOCK TABLES `country` WRITE;" +
+                "\r\n/*!40000 ALTER TABLE `country` DISABLE KEYS */;" +
+                "\r\nINSERT INTO `country` VALUES (1,'US','2019-01-01 00:00:00','test','2019-01-01 00:00:00','test'),(2,'Canada','2019-01-01 00:00:00','test','2019-01-01 00:00:00','test'),(3,'Norway','2019-01-01 00:00:00','test','2019-01-01 00:00:00','test');" +
+                "\r\n/*!40000 ALTER TABLE `country` ENABLE KEYS */;\r\nUNLOCK TABLES;\r\n\r\n--\r\n-- Table structure for table `customer`\r\n--\r\n" +
+                "\r\nDROP TABLE IF EXISTS `customer`;\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;\r\n/*!50503 SET character_set_client = utf8mb4 */;" +
+                "\r\nCREATE TABLE `customer` (\r\n  `customerId` int NOT NULL AUTO_INCREMENT,\r\n  `customerName` varchar(45) NOT NULL,\r\n  `addressId` int NOT NULL," +
+                "\r\n  `active` tinyint(1) NOT NULL,\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL," +
+                "\r\n  `organizationId` int NOT NULL,\r\n  `email` varchar(50) NOT NULL,\r\n  `notes` text,\r\n  PRIMARY KEY (`customerId`)," +
+                "\r\n  KEY `addressId` (`addressId`),\r\n  KEY `customer_ibfk_2` (`organizationId`)," +
+                "\r\n  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`addressId`) REFERENCES `address` (`addressId`)," +
+                "\r\n  CONSTRAINT `customer_ibfk_2` FOREIGN KEY (`organizationId`) REFERENCES `organization` (`organizationId`)" +
+                "\r\n) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n/*!40101 SET character_set_client = @saved_cs_client */;" +
+                "\r\n\r\n--\r\n-- Table structure for table `organization`\r\n--\r\n\r\nDROP TABLE IF EXISTS `organization`;" +
+                "\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `organization` (" +
+                "\r\n  `organizationId` int NOT NULL AUTO_INCREMENT,\r\n  `organizationName` varchar(50) NOT NULL,\r\n  `billingContactName` varchar(50) NOT NULL," +
+                "\r\n  `billingContactPhone` varchar(20) NOT NULL,\r\n  `billingContactEmail` varchar(50) NOT NULL,\r\n  `active` tinyint(1) NOT NULL," +
+                "\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL,\r\n  `notes` text," +
+                "\r\n  PRIMARY KEY (`organizationId`)\r\n) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;" +
+                "\r\n/*!40101 SET character_set_client = @saved_cs_client */;\r\n\r\n--\r\n-- Table structure for table `time`\r\n--\r\n\r\nDROP TABLE IF EXISTS `time`;" +
+                "\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `time` (" +
+                "\r\n  `timeId` int NOT NULL AUTO_INCREMENT,\r\n  `customerId` int DEFAULT NULL,\r\n  `userId` int NOT NULL,\r\n  `title` varchar(255) NOT NULL," +
+                "\r\n  `description` text NOT NULL,\r\n  `location` text NOT NULL,\r\n  `contact` text NOT NULL,\r\n  `type` text NOT NULL,\r\n  `url` varchar(255) NOT NULL," +
+                "\r\n  `start` datetime NOT NULL,\r\n  `end` datetime NOT NULL,\r\n  `createDate` datetime NOT NULL,\r\n  `createdBy` varchar(40) NOT NULL," +
+                "\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\r\n  `lastUpdateBy` varchar(40) NOT NULL," +
+                "\r\n  `billingContractId` int DEFAULT NULL,\r\n  `totalHours` decimal(10,0) DEFAULT NULL,\r\n  `billable` tinyint(1) DEFAULT NULL,\r\n  `notes` text," +
+                "\r\n  `organizationId` int DEFAULT NULL,\r\n  PRIMARY KEY (`timeId`),\r\n  KEY `userId` (`userId`)," +
+                "\r\n  CONSTRAINT `time_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)" +
+                "\r\n) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n/*!40101 SET character_set_client = @saved_cs_client */;" +
+                "\r\n\r\n--\r\n-- Table structure for table `user`\r\n--\r\n\r\nDROP TABLE IF EXISTS `user`;\r\n/*!40101 SET @saved_cs_client     = @@character_set_client */;" +
+                "\r\n/*!50503 SET character_set_client = utf8mb4 */;\r\nCREATE TABLE `user` (\r\n  `userId` int NOT NULL AUTO_INCREMENT," +
+                "\r\n  `userName` varchar(50) NOT NULL,\r\n  `password` varchar(50) NOT NULL,\r\n  `active` tinyint NOT NULL,\r\n  `createDate` datetime NOT NULL," +
+                "\r\n  `createdBy` varchar(40) NOT NULL,\r\n  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                "\r\n  `lastUpdateBy` varchar(40) NOT NULL,\r\n  PRIMARY KEY (`userId`)\r\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;" +
+                "\r\n/*!40101 SET character_set_client = @saved_cs_client */;\r\n\r\n--\r\n-- Dumping data for table `user`\r\n--\r\n\r\nLOCK TABLES `user` WRITE;" +
+                "\r\n/*!40000 ALTER TABLE `user` DISABLE KEYS */;\r\nINSERT INTO `user` VALUES (1,'test','test',1,'2019-01-01 00:00:00','test','2019-01-01 00:00:00','test');" +
+                "\r\n/*!40000 ALTER TABLE `user` ENABLE KEYS */;\r\nUNLOCK TABLES;\r\n/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;\r\n\r\n/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;" +
+                "\r\n/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;\r\n/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;" +
+                "\r\n/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;\r\n/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;" +
+                "\r\n/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;\r\n/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;";
 
-            connection.Open();
-            MySqlCommand cmd = new MySqlCommand(query, connection);
+            connectionCheck.Open();
+            MySqlCommand cmd = new MySqlCommand(query, connectionCheck);
             cmd.ExecuteNonQuery();
-            connection.Close();
+            connectionCheck.Close();
         }
     }
 }

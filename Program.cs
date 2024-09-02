@@ -18,35 +18,39 @@ namespace C868
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             try 
-            {
-                if (Database.CheckInstall() == false) { throw new ApplicationException("Connection to server established.\nSchedule It requires a new database structure to be introduced.\nWould you like to proceed with database setup?"); }
-            }
-            catch (ApplicationException error)
-            {
-                DialogResult dbSetup = MessageBox.Show(error.Message, "Setup", MessageBoxButtons.YesNo);
-                if (dbSetup == DialogResult.Yes) 
+            {                
+                if (Database.CheckInstall() == false) 
                 {
-                    try 
-                    { 
-                        //Database.SetupDB(); 
-                        MessageBox.Show("Schedule It database has been setup successfully."); 
-                    } 
-                    catch (Exception err) 
-                    { 
-                        MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK); 
-                    } 
-                } 
-                else 
+                    DialogResult dbSetup = MessageBox.Show("Connection to server established.\n\nSchedule It requires a new database structure to be introduced.\nWould you like to proceed with database setup?", "Setup", MessageBoxButtons.YesNo);
+                    if (dbSetup == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            Database.SetupDB();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
+                        }
+                        MessageBox.Show("Schedule It database has been setup successfully.");
+                        LoginScreen login = new LoginScreen();
+                        if (login.ShowDialog() == DialogResult.OK) { Application.Run(new MainScreen(login.User[0])); } else { Application.Exit(); }
+                    }
+                    else
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+                else
                 {
-                    Environment.Exit(0); 
+                    LoginScreen login = new LoginScreen();
+                    if (login.ShowDialog() == DialogResult.OK) { Application.Run(new MainScreen(login.User[0])); } else { Application.Exit(); }
                 }
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK);
-            }
-            LoginScreen login = new LoginScreen();
-            if (login.ShowDialog() == DialogResult.OK) { Application.Run(new MainScreen(login.User[0])); } else { Application.Exit(); }
+            }            
         }
     }
 }

@@ -28,12 +28,15 @@ namespace C868
             CustomerScreen_Country_Combo.DataSource = countryDictionary;
             CustomerScreen_Country_Combo.DisplayMember = "Value";
             CustomerScreen_Country_Combo.ValueMember = "Key";
-            CustomerScreen_Country_Combo.SelectedItem = null;
-            var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
-            CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
-            CustomerScreen_Organization_Combo.DisplayMember = "Value";
-            CustomerScreen_Organization_Combo.ValueMember = "Key";
-            CustomerScreen_Organization_Combo.SelectedItem = null;
+            CustomerScreen_Country_Combo.SelectedItem = null;            
+            if (MainScreen.Organizations.Count > 0)
+            {
+                var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
+                CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
+                CustomerScreen_Organization_Combo.DisplayMember = "Value";
+                CustomerScreen_Organization_Combo.ValueMember = "Key";
+                CustomerScreen_Organization_Combo.SelectedItem = null;
+            }
             ActiveControl = CustomerScreen_Name_Text;
         }
 
@@ -54,11 +57,14 @@ namespace C868
             CustomerScreen_Country_Combo.DisplayMember = "Value";
             CustomerScreen_Country_Combo.ValueMember = "Key";
             CustomerScreen_Country_Combo.SelectedItem = MainScreen.Countries.Where(x => x.Value.ToLower() == customer.Country.ToLower()).Single();
-            var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
-            CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
-            CustomerScreen_Organization_Combo.DisplayMember = "Value";
-            CustomerScreen_Organization_Combo.ValueMember = "Key";
-            CustomerScreen_Organization_Combo.SelectedItem = MainScreen.OrganizationDictionary.Where(x => Convert.ToInt32(x.Key) == customer.OrganizationID).Single();
+            if (MainScreen.Customers.Count > 0)
+            {
+                var organizationDictionary = new BindingSource { DataSource = MainScreen.OrganizationDictionary };
+                CustomerScreen_Organization_Combo.DataSource = organizationDictionary;
+                CustomerScreen_Organization_Combo.DisplayMember = "Value";
+                CustomerScreen_Organization_Combo.ValueMember = "Key";
+                CustomerScreen_Organization_Combo.SelectedItem = MainScreen.OrganizationDictionary.Where(x => Convert.ToInt32(x.Key) == customer.OrganizationID).Single();
+            }
             ActiveControl = CustomerScreen_Name_Text;
         }
 
