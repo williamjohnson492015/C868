@@ -445,8 +445,8 @@ namespace C868
             while (dataReader.Read())
             {
                 int timeID = Convert.ToInt32(dataReader[0]);
-                int orgID = Convert.ToInt32(dataReader[1]); //this will need to be conditional
-                int customerID = Convert.ToInt32(dataReader[2]); //this will need to be conditional
+                int orgID = Convert.ToInt32(dataReader[1]); 
+                int customerID = Convert.ToInt32(dataReader[2]); 
                 string customerName = dataReader[3].ToString();
                 int userID = Convert.ToInt32(dataReader[4]);
                 string userName = dataReader[5].ToString();
@@ -486,8 +486,8 @@ namespace C868
             while (dataReader.Read())
             {
                 int timeID = Convert.ToInt32(dataReader[0]);
-                int orgID = Convert.ToInt32(dataReader[1]); //this needs to be conditional
-                int customerID = Convert.ToInt32(dataReader[2]); //this needs to be conditional
+                int orgID = Convert.ToInt32(dataReader[1]); 
+                int customerID = Convert.ToInt32(dataReader[2]); 
                 string customerName = dataReader[3].ToString();
                 int userID = Convert.ToInt32(dataReader[4]);
                 string user = dataReader[5].ToString();
@@ -524,8 +524,8 @@ namespace C868
             while (dataReader.Read())
             {
                 int timeID = Convert.ToInt32(dataReader[0]);
-                int orgID = Convert.ToInt32(dataReader[1]); //this needs to be conditional
-                int customerID = Convert.ToInt32(dataReader[2]); //this needs to be conditional
+                int orgID = Convert.ToInt32(dataReader[1]); 
+                int customerID = Convert.ToInt32(dataReader[2]);
                 string customerName = dataReader[3].ToString();
                 int userID = Convert.ToInt32(dataReader[4]);
                 string user = dataReader[5].ToString();

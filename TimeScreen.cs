@@ -8,6 +8,7 @@ using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -53,7 +54,8 @@ namespace C868
         public TimeScreen(Time Time)
         {
             InitializeComponent();
-            var orgName = MainScreen.Organizations.Where(x => x.OrganizationID == Time.OrganizationID).Select(x => x.OrganizationName).Single();
+            var orgName = "";
+            if (Time.OrganizationID > 0) { orgName = MainScreen.Organizations.Where(x => x.OrganizationID == Time.OrganizationID).Select(x => x.OrganizationName).Single(); }
             TimeScreen_TimeID_Text.Text = Time.TimeID.ToString();
             TimeScreen_Type_Combo.DataSource = MainScreen.TimeTypes;
             TimeScreen_Type_Combo.SelectedItem = Time.Type;
@@ -63,7 +65,7 @@ namespace C868
                 TimeScreen_Organization_Combo.DataSource = organizationDictionary;
                 TimeScreen_Organization_Combo.DisplayMember = "Value";
                 TimeScreen_Organization_Combo.ValueMember = "Key";
-                TimeScreen_Organization_Combo.SelectedItem = orgName;
+                if (orgName != "") { TimeScreen_Organization_Combo.SelectedItem = orgName; } else { TimeScreen_Organization_Combo.SelectedItem = null; }
             }
             if (MainScreen.Customers.Count > 0)
             {
@@ -71,12 +73,14 @@ namespace C868
                 TimeScreen_Customer_Combo.DataSource = customerDictionary;
                 TimeScreen_Customer_Combo.DisplayMember = "Value";
                 TimeScreen_Customer_Combo.ValueMember = "Key";
-                TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName;
+                if (Time.CustomerName != "") { TimeScreen_Customer_Combo.SelectedItem = Time.CustomerName; } else { TimeScreen_Customer_Combo.SelectedItem = null; }
             }
             TimeScreen_Start_DatePicker.Value = Time.Start;
             TimeScreen_End_DatePicker.Value = Time.End;
+            TimeScreen_Notes_Text.Text = Time.Notes;
             ActiveControl = TimeScreen_Type_Combo;
             formLoadComplete = true;
+            TimeScreen_BillingContract_Combo_Refresh(Time.BillingContractID);
         }
 
         private void TimeScreen_Cancel_Btn_Click(object sender, EventArgs e)
@@ -225,7 +229,7 @@ namespace C868
             }
         }
 
-        private void TimeScreen_BillingContract_Combo_Refresh()
+        private void TimeScreen_BillingContract_Combo_Refresh(int contractId = -1 )
         {
             if (formLoadComplete && TimeScreen_Organization_Combo.SelectedItem != null)
             {
@@ -245,7 +249,8 @@ namespace C868
                         TimeScreen_ChargeTo_Combo.DataSource = refresh;
                         TimeScreen_ChargeTo_Combo.DisplayMember = "Value";
                         TimeScreen_ChargeTo_Combo.ValueMember = "Key";
-                        TimeScreen_ChargeTo_Combo.SelectedItem = null;
+                        if (contractId == -1) { TimeScreen_ChargeTo_Combo.SelectedItem = null; }
+                        if (contractId > 0) { TimeScreen_ChargeTo_Combo.SelectedItem = MainScreen.BillingContracts.Where(x => x.BillingContractID == contractId).Select(x => x.Title).Single(); }
                     }
                     else
                     {
